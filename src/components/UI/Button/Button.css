@@ -1,0 +1,44 @@
+.Button {
+    background-color: transparent;
+    border: none;
+    color: black;
+    outline: none;
+    cursor: pointer;
+    font: inherit;
+    padding: 3px;
+    margin: 10px;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.Button:first-of-type {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.Button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.Action {
+    color: black;
+}
+
+.Success {
+    color: blue;
+}
+
+.Save {
+    color: green;
+}
+
+.Danger {
+    color: red;
+}
+
+.Button:hover {
+    -ms-transform: scale(1.5); /* IE 9 */
+    -webkit-transform: scale(1.5); /* Safari 3-8 */
+    transform: scale(1.5);
+}

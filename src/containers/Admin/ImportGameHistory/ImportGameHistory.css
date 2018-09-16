@@ -1,0 +1,30 @@
+.ImportGameHistory {
+    margin: 20px auto;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 2px 3px #ccc;
+    border: 1px solid #eee;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.ImportGameHistoryRow {
+    display:inline-block;
+    box-align: center;
+}
+
+.ImportGameHistoryRows {
+    width: 260px;
+    margin-left: 20px;
+}
+
+.ImportGameHistoryControls {
+    margin-left: 20px;
+}
+
+.ImportGameHistoryControls Button {
+    margin-left: 20px;
+    margin-bottom: 0;
+    width: 109px;
+    font-size: 10px;
+}
