@@ -1,30 +1,73 @@
 .ImportGameHistory {
-    margin: 20px auto;
-    width: 300px;
+    margin: 20px;
+    width: 80%;
     text-align: center;
     box-shadow: 0 2px 3px #ccc;
     border: 1px solid #eee;
-    padding: 10px;
+    padding: 40px;
     box-sizing: border-box;
 }
 
-.ImportGameHistoryRow {
-    display:inline-block;
-    box-align: center;
+.ImportGameHistoryLabel {
+    text-align: left;
 }
 
-.ImportGameHistoryRows {
-    width: 260px;
-    margin-left: 20px;
+.Input {
+    width: 80%;
+    padding: 10px;
+    margin: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
 }
 
-.ImportGameHistoryControls {
-    margin-left: 20px;
+.ScoreInputLabel {
+    margin-right: 5px;
+    text-align: left;
 }
+.ScoreInput {
+    width: 10%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+
+
+
+
+
+
+
+
+
 
 .ImportGameHistoryControls Button {
     margin-left: 20px;
     margin-bottom: 0;
     width: 109px;
     font-size: 10px;
+}
+
+
+
+.ImportScores {
+    display:inline-block;
+    box-align: center;
+    width: 50px;
+    margin: 0 10px 0 0;
+}
+
+
+
+.Instructions {
+    text-align: left;
+    padding: 10px;
+    margin: 10px;
+}
+
+@media (min-width: 600px) {
+    .ImportGameHistory {
+        width: 500px;
+    }
 }
