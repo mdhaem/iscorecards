@@ -15,9 +15,10 @@ export const fetchGamesFailed = () => {
     };
 };
 
-export const initGames = (tokenId) => {
+export const initGames = (tokenId, userId) => {
     return dispatch => {
-        axios.get( '/games.json')
+        const queryParams = '?auth='+ tokenId + '&orderBy="user"&equalTo="' + userId + '"';
+        axios.get( '/games.json' + queryParams)
             .then( response => {
                 console.log('response.data',response.data);
                 const result = Object.keys(response.data).map(i => response.data[i])

@@ -30,8 +30,8 @@ class ImportGameHistory extends Component {
 
     componentDidMount(props) {
         //const newState = this.state;
-        this.props.onFetchGames(this.props.tokenId);
-        this.props.onFetchTeams(this.props.tokenId);
+        this.props.onFetchGames(this.props.tokenId, this.props.userId);
+        this.props.onFetchTeams(this.props.tokenId, this.props.userId);
         console.log(this.props.games);
         this.setState(this.state); 
       }
@@ -62,7 +62,8 @@ const mapStateToProps = state => {
         // scoreAdded: state.importScoresReducer.scoreAdded,
         games: state.games.games,
         teams: state.teams.teams,
-        tokenId: state.auth.tokenId
+        tokenId: state.auth.idToken,
+        userId: state.auth.localId
         
     };
 };
@@ -70,8 +71,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchOrders: () => dispatch( actions.addScore() ),
-        onFetchGames: () => dispatch( actions.initGames()),
-        onFetchTeams: () => dispatch( actions.initTeams()),
+        onFetchGames: (tokenId, userId) => dispatch( actions.initGames(tokenId, userId)),
+        onFetchTeams: (tokenId, userId) => dispatch( actions.initTeams(tokenId, userId)),
     };
 };
 

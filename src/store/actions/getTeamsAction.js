@@ -15,9 +15,10 @@ export const fetchTeamsFailed = () => {
     };
 };
 
-export const initTeams = (tokenId) => {
+export const initTeams = (tokenId, userId) => {
     return dispatch => {
-        axios.get( '/teams.json')
+        const queryParams = '?orderBy="user"&equalTo="' + userId + '"';
+        axios.get( '/teams.json' + queryParams)
             .then( response => {
                 console.log('response.data',response.data);
                 const result = Object.keys(response.data).map(i => response.data[i])
