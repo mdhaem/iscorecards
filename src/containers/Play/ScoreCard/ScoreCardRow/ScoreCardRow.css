@@ -1,25 +1,22 @@
 .ScoreCard {
     margin: 20px auto;
-    width: 300px;
+    width: 80%;
     text-align: center;
-    box-shadow: 0 2px 3px #ccc;
+    /* box-shadow: 0 2px 3px #ccc;
     border: 1px solid #eee;
     padding: 10px;
-    box-sizing: border-box;
-}
-
-.ScoreCardRow {
-    display:inline-block;
-    box-align: center;
+    box-sizing: border-box; */
 }
 
 .ScoreCardRows {
-    width: 260px;
-    margin-left: 20px;
+    display: block;
+    box-align: center;
+    width: 80%;
+    margin: auto;
 }
 
 .ScoreCardControls {
-    margin-left: 20px;
+    margin: 20px;
 }
 
 .ScoreCardControls Button {

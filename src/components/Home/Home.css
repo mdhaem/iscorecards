@@ -1,4 +1,4 @@
-.ScoreCard {
+.Home {
     margin: 20px auto;
     width: 80%;
     text-align: center;
@@ -6,6 +6,13 @@
     border: 1px solid #eee;
     padding: 10px;
     box-sizing: border-box;
+}
+.Input {
+    width: 80%;
+    padding: 10px;
+    margin: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
 }
 
 .Instructions {
@@ -15,7 +22,7 @@
 }
 
 @media (min-width: 600px) {
-    .SelectGame {
+    .Home {
         width: 500px;
     }
 }

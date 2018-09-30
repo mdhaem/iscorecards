@@ -7,6 +7,7 @@ import NavigationDropDown from './NavigationItem/DropDownItem';
 
 const navigationItems = (props) => (
     <ul className={classes.NavigationItems}>
+        <NavigationItem link="/" exact>Home</NavigationItem>
         {props.isAuthenticated
             ? <NavigationItem link="/rplay" exact>Play</NavigationItem>
             : <NavigationItem link="/uplay" exact>Play</NavigationItem>}

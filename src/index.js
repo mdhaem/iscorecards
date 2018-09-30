@@ -18,6 +18,7 @@ import getPlayersReducer from './store/reducers/getPlayersReducer';
 import newTeamReducer from './store/reducers/newTeamReducer';
 import getGamesReducer from './store/reducers/getGamesReducer';
 import getTeamsReducer from './store/reducers/getTeamsReducer';
+import scoreCardReducer from './store/reducers/scoreCardReducer';
 import {reducer as formReducer } from 'redux-form';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
     playerList: getPlayersReducer,
     games: getGamesReducer,
     teams: getTeamsReducer,
+    scoreCard: scoreCardReducer,
     form: formReducer
 });
 

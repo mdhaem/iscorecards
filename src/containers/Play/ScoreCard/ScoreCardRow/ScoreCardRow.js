@@ -1,27 +1,21 @@
 import React, {Component} from 'react';
-// import { Route, Redirect } from 'react-router-dom';
-
+import {connect} from 'react-redux';
 
 import * as classes from './ScoreCardRow.css';
 import ScoreCardCell from '../ScoreCell/ScoreCardCell';
 import Button from '../../../../components/UI/Button/Button';
+import Aux from '../../../../hoc/Aux/Aux';
 
 class ScoreCardRow extends Component {
     state = {
-        game: 'Hand and Foot',
-        players: [
-            {id: 1, player: 'Bill'}, 
-            {id: 2, player: 'Bev'}, 
-            {id: 3, player: 'Mike'}, 
-            {id: 4, player: 'Sandy'}
-        ],
         scores: [],
         totals: []
     }
 
     updateState = () => {
-        const players = this.state.players;
-        console.log(players);
+        this.setState(this.state); 
+        const players = this.props.players;
+        console.log(this.props.players);
         let newStateObjects = [];
         players.forEach(item => {
             newStateObjects.push({key: 'totals'+item.id, sum: 0,  value:[]});
@@ -91,7 +85,8 @@ class ScoreCardRow extends Component {
     };
 
     render (props) {
-
+        const count = this.props.players.length;
+        console.log(count);
         let gameHistory = [];
         gameHistory.push(
             <ScoreCardCell 
@@ -100,7 +95,7 @@ class ScoreCardRow extends Component {
                     type='text'
                     defaultValue='History'
                     />)
-        this.times (4) (i => {
+        this.times (count) (i => {
             let id = 'history'+(i+1); 
             gameHistory.push(
             <ScoreCardCell 
@@ -119,14 +114,14 @@ class ScoreCardRow extends Component {
                     type='text'
                     defaultValue='Score'
                     />)
-        this.times (4) (i => {
+        this.times (count) (i => {
             let id = 'totals'+(i+1); 
             totals.push(
             <ScoreCardCell 
                     key={id}
                     id={id}
                     type='text'
-                    value={parseInt(this.state.totals[i].sum, 10)}
+                    //value={parseInt(this.state.totals[i].sum, 10)}
                     changed={(event) => {}}/>)
             })
 console.log(totals);
@@ -139,14 +134,15 @@ console.log(totals);
                     defaultValue='Player'
                     changed={(event) => {}}/>)
 
-            const players = this.state.players;
+            const players = this.props.players;
+            console.log(players);
             players.map( player => (               
                 gamePlayers.push(
                     <ScoreCardCell 
-                            key={player.player}
-                            id={player.player}
+                            key={player}
+                            id={player}
                             type='text'
-                            defaultValue={player.player}
+                            defaultValue={player}
                             />)));
 
             let row = [];
@@ -161,28 +157,37 @@ console.log(totals);
                                 defaultValue={r+1}
                                 />)
                     
-                        //for (let c = 1; c <= 4; c++) {
-                        this.times (4) (c =>  { 
+                        this.times (count) (c =>  { 
                             let id = 'row' + (r+1) + (c+1);
                         row.push(
-                        <ScoreCardCell 
+                       <ScoreCardCell 
                                 key={id}
                                 id={id}
                                 column={c}
                                 type='number'
                                 value={this.state.value}
-                                changed={(event) => this.inputChangedHandler(event, id, (c+1), r)} />)
+                                changed={(event) => this.inputChangedHandler(event, id, (c+1), r)}
+                                 />)
                         })
                             
                 });
+                console.log(count);
+                let frow = [];
+                while (row.length) {
+                    let irow = row.splice(0, this.props.players.length + 1)
+                    console.log(irow);
+                    frow.push(<div>{irow}</div>);
+                }
+                console.log(frow);
 
+            console.log(row);
         return (
             <div className={classes.ScoreCard}>
                 <div><h1>{this.state.game}</h1></div>
                 <div className={classes.ScoreCardRows}>{gameHistory}</div>
                 <div className={classes.ScoreCardRows}>{totals}</div>
                 <div className={classes.ScoreCardRows}>{gamePlayers}</div>
-                <div className={classes.ScoreCardRows}>{row}</div>
+                <div className={classes.ScoreCardRows}>{frow}</div>
                 <div className={classes.ScoreCardControls}>
                     <Button className={classes.Button} btnType='Action'>ADD ROW</Button>
                     <Button btnType='Action'>DELETE ROW</Button>
@@ -199,4 +204,12 @@ console.log(totals);
 
 }
 
-export default ScoreCardRow    
+const mapStateToProps = state => {
+    return {
+            players: state.scoreCard.players,
+            game: state.scoreCard.game,
+            token: state.auth.idToken,
+    };
+};
+
+export default connect(mapStateToProps, null)(ScoreCardRow);    

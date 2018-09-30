@@ -34,3 +34,7 @@ export {
     initTeams,
     fetchTeams
 } from './getTeamsAction';
+
+export {
+    makeScoreCard
+} from './scoreCardAction';

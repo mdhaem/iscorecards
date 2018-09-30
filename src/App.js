@@ -12,6 +12,8 @@ import UnregisteredGame from './containers/Play/UnregisteredGame/UnregisteredGam
 import ScoreCard from './containers/Play/ScoreCard/ScoreCard';
 import ImportGameHistory from './containers/Admin/ImportGameHistory/ImportGameHistory';
 import Logout from './containers/Auth/Logout/Logout';
+import Home from './components/Home/Home';
+
 import * as action from './store/actions/index';
 
 
@@ -26,7 +28,10 @@ class App extends Component {
       <Switch>
         <Route path="/uplay" component={UnregisteredGame} />
         <Route path="/auth" exact component={Auth} />
-      </Switch>
+        <Route path="/scorecard" component={ScoreCard} />
+        <Route path="/" component={Home} />
+       
+        </Switch>
     );
 
     if(this.props.isAuthenticated) {

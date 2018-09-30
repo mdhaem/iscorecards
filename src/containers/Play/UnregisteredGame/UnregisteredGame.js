@@ -1,9 +1,12 @@
 import React, {Component} from  'react';
+import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 
 import classes from './UnregisteredGame.css';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import * as actions from '../../../store/actions';
 
 class UnregisteredGame extends Component {
     state = {
@@ -21,22 +24,21 @@ class UnregisteredGame extends Component {
                 },
                 valid: false,
             },
-            hands: {
-                elementType: 'select',
+            players: {
+                elementType: 'input',
                 elementConfig: {
-                    options: [
-                        {value: '...chose number of hands', displayValue: '...chose number of hands'},
-                        {value: 'Mike, Sandy', displayValue: 'Mike, Sandy'}
-                    ]
+                    type: 'text',
+                    placeholder: '...enter player name\'s'
                 },
-                value: 8,
+                value: [],
                 validation: {
-                    changed: true
+                    reguired: true
                 },
-                valid: false
-            }
+                valid: false,
+            },
         },
-        formIsValid: false
+        formIsValid: false,
+        redirect: false
     }
     
     checkValidity(value, rules) {
@@ -66,7 +68,7 @@ class UnregisteredGame extends Component {
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
-        //console.log(event, inputIdentifier);
+        console.log(event, inputIdentifier);
         const updatedSelectGameForm = {
             ...this.state.unregisteredGameForm
         };
@@ -81,28 +83,23 @@ class UnregisteredGame extends Component {
         //console.log(updatedFormElement.valid);
         updatedSelectGameForm[inputIdentifier] = updatedFormElement;
         
-        const formIsValid = updatedSelectGameForm['gameName'].valid && updatedSelectGameForm['hands'].valid;
-        //console.log(formIsValid);
+        const formIsValid = updatedSelectGameForm['gameName'].valid && updatedSelectGameForm['players'].valid;
+        console.log(formIsValid);
         this.setState({unregisteredGameForm: updatedSelectGameForm, formIsValid: formIsValid});
         //console.log(this.state);
     }
 
-    createOptions = () => {
-        const handOptions = [];
-        for (let i = 1; i < 13; i++) { 
-            handOptions.push({value: i, displayValue: i});
-        } 
-        return handOptions;
-    }
-        
-    componentDidMount() {
-        const newState = this.state;
-        // console.log(newState);
-        // console.log(this.createOptions());
-        newState.unregisteredGameForm.hands.elementConfig.options = this.createOptions();
-        // console.log(newState);
-        this.setState({unregisteredGameForm: newState.unregisteredGameForm});
-        // console.log(this.state.newGameForm);
+    unregistedGamePlayHandler = (event) => {
+        event.preventDefault();
+        const playersArray = this.state.unregisteredGameForm.players.value.split(' ');
+        const scoreCard = {
+            game: this.state.unregisteredGameForm.gameName.value,
+            players: playersArray
+        }
+        console.log(scoreCard);
+        this.props.onNewScoreCard(scoreCard);
+        this.setState(this.state); 
+        this.setState({redirect: true}); 
     }
 
     render() {
@@ -114,7 +111,7 @@ class UnregisteredGame extends Component {
             });
         }
         let form = (
-            <form onSubmit={this.orderHandler}>
+            <form onSubmit={this.unregistedGamePlayHandler}>
                 {formElementsArray.map(formElement => (
                     <Input 
                         key={formElement.id}
@@ -126,8 +123,8 @@ class UnregisteredGame extends Component {
                         touched={formElement.config.touched}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)} />
                 ))}
-                <Button btnType="Danger">CANCEL</Button>
-                <Button btnType="Success" disabled={!this.state.formIsValid}>SAVE</Button>
+                {/* <Button btnType="Danger">CANCEL</Button> */}
+                <Button btnType="Success" disabled={!this.state.formIsValid}>CONTINUE TO SCORECARD</Button>
             </form>
         );
         if ( this.props.loading ) {
@@ -137,11 +134,26 @@ class UnregisteredGame extends Component {
         return (
             <div className={classes.SelectGame}>
                 <h1>Play</h1>
-                <p className={classes.Instructions}>Select game then team.</p>
+                <h4>Unregistered Game</h4>
+                <p className={classes.Instructions}>Enter a game name, then players first name seperated by a comma or space.</p>
+                {this.state.redirect?<Redirect to="/scorecard" />:null}
                 {form}
             </div>
         );
     }
 }
 
- export default UnregisteredGame;
+const mapStateToProps = state => {
+    return {
+        game: state.scoreCard.game,
+        players: state.scoreCard.players
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onNewScoreCard: (scoreCard) => dispatch(actions.makeScoreCard(scoreCard)),
+    };
+};
+
+ export default connect(mapStateToProps, mapDispatchToProps)(UnregisteredGame);
