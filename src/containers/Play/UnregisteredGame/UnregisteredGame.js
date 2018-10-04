@@ -68,6 +68,7 @@ class UnregisteredGame extends Component {
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
+        //alert('inputChangeHandler called');
         console.log(event, inputIdentifier);
         const updatedSelectGameForm = {
             ...this.state.unregisteredGameForm
@@ -94,7 +95,8 @@ class UnregisteredGame extends Component {
         const playersArray = this.state.unregisteredGameForm.players.value.split(' ');
         const scoreCard = {
             game: this.state.unregisteredGameForm.gameName.value,
-            players: playersArray
+            players: playersArray,
+            registered: false
         }
         console.log(scoreCard);
         this.props.onNewScoreCard(scoreCard);
@@ -146,7 +148,8 @@ class UnregisteredGame extends Component {
 const mapStateToProps = state => {
     return {
         game: state.scoreCard.game,
-        players: state.scoreCard.players
+        players: state.scoreCard.players,
+        registered: state.scoreCard.registered
     };
 };
 

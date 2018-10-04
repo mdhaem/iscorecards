@@ -4,12 +4,12 @@ import {connect} from 'react-redux';
 import * as classes from './ScoreCardRow.css';
 import ScoreCardCell from '../ScoreCell/ScoreCardCell';
 import Button from '../../../../components/UI/Button/Button';
-import Aux from '../../../../hoc/Aux/Aux';
+//import Aux from '../../../../hoc/Aux/Aux';
 
 class ScoreCardRow extends Component {
     state = {
-        scores: [],
-        totals: []
+        totals: [],
+        row: []
     }
 
     updateState = () => {
@@ -27,19 +27,25 @@ class ScoreCardRow extends Component {
     }
 
     inputChangedHandler = (event, inputIdentifier, column, row) => {
+        //alert('scorecardrow inputChangeHandle called');
         console.log(event.target.value);
         console.log(inputIdentifier);
         console.log(column);
         console.log(row);
 
+        const updatedRow = this.state.row;
+        updatedRow.find(x => x.key === inputIdentifier).value = event.target.value;
+        this.setState({row: updatedRow});
+
         const updatedState = this.state.totals;
-        console.log(updatedState[column-1].value);
-        if(event.target.value !== ""){
+        console.log(updatedState[column-1].value[row]);
+        if(event.target.value >= 0){
             console.log(updatedState[column-1].value[row]);
             if(updatedState[column-1].value[row]){
                 updatedState[column-1].value[row].value = event.target.value;
             } else {
                 updatedState[column-1].value.push({value: event.target.value});
+                console.log(updatedState[column-1].value[row]);
             }
         }
         console.log(updatedState);
@@ -50,10 +56,13 @@ class ScoreCardRow extends Component {
         this.setState({totals: updatedState});
         console.log(this.state.totals);
         console.log(this.state.totals[0].sum);
+        this.setState(this.state);
     }
 
     newGameHandler = () => {
-        window.location.reload();
+        const updatedRow = this.state.row;
+        updatedRow.map( value => value = 0);
+        this.setState({row: updatedRow});
     }
 
     times = n => f => {
@@ -82,9 +91,76 @@ class ScoreCardRow extends Component {
         const updateTotals = this.updateState();
         //console.log(updateTotals);
         this.setState({totals: updateTotals});
+        // console.log(this.props.players.length);
+        const rows = this.rowArray(this.props.players.length);
+        console.log(rows);
+        let newRows = this.state.row;
+        newRows = rows;
+        this.setState({row: newRows});
+        console.log(this.state.row);
     };
 
+    // componentDidMount() {
+    //     console.log(this.props.players.length);
+    //     const rows = this.rowArray(this.props.players.length);
+    //     console.log(rows);
+    //     let newRows = this.state.row;
+    //     newRows = rows;
+    //     this.setState({row: newRows});
+    //     console.log(this.state.row);
+        
+    // }
+
+    rowArray() {
+        const count = this.props.players.length;
+        let rowArray = [];
+        this.times (8) (r =>
+        {
+            this.times (count) (c =>  { 
+                let id = 'row' + (r+1) + (c+1);
+                rowArray.push( {key: id, value: 0});
+            })
+        
+        })
+        return rowArray;
+    }
+    handleFocus = (event) => {
+        event.target.select();
+    }
+
+    rows(count) {
+        let row = [];
+        this.times (8) (r =>
+            {
+                let id = 'hand'+(r+1);
+                row.push(
+                    <ScoreCardCell 
+                            key={id}
+                            id={id}
+                            type='text'
+                            defaultValue={r+1}
+                            />)
+                
+                    this.times (count) (c =>  { 
+                        let id = 'row' + (r+1) + (c+1);
+                    row.push(
+                    <ScoreCardCell 
+                            key={id}
+                            id={id}
+                            column={c}
+                            type='number'
+                            value={this.state.row.find(x => x.key === id).value}//{this.state.value}//
+                            changed={(event) => this.inputChangedHandler(event, id, (c+1), r)}
+                            focus={this.handleFocus}
+                                />)
+                    })
+                        
+            });
+            return row;
+    }
+    ////////////////////////////////////////////////////////
     render (props) {
+        
         const count = this.props.players.length;
         console.log(count);
         let gameHistory = [];
@@ -121,7 +197,7 @@ class ScoreCardRow extends Component {
                     key={id}
                     id={id}
                     type='text'
-                    //value={parseInt(this.state.totals[i].sum, 10)}
+                    value={parseInt(this.state.totals[i].sum, 10)}
                     changed={(event) => {}}/>)
             })
 console.log(totals);
@@ -145,46 +221,53 @@ console.log(totals);
                             defaultValue={player}
                             />)));
 
-            let row = [];
-            this.times (8) (r =>
-                {
-                    let id = 'hand'+(r+1);
-                    row.push(
-                        <ScoreCardCell 
-                                key={id}
-                                id={id}
-                                type='text'
-                                defaultValue={r+1}
-                                />)
+            // let row = [];
+            // this.times (8) (r =>
+            //     {
+            //         let id = 'hand'+(r+1);
+            //         row.push(
+            //             <ScoreCardCell 
+            //                     key={id}
+            //                     id={id}
+            //                     type='text'
+            //                     defaultValue={r+1}
+            //                     />)
                     
-                        this.times (count) (c =>  { 
-                            let id = 'row' + (r+1) + (c+1);
-                        row.push(
-                       <ScoreCardCell 
-                                key={id}
-                                id={id}
-                                column={c}
-                                type='number'
-                                value={this.state.value}
-                                changed={(event) => this.inputChangedHandler(event, id, (c+1), r)}
-                                 />)
-                        })
+            //             this.times (count) (c =>  { 
+            //                 let id = 'row' + (r+1) + (c+1);
+            //             row.push(
+            //            <ScoreCardCell 
+            //                     key={id}
+            //                     id={id}
+            //                     column={c}
+            //                     type='number'
+            //                     value={this.state.value}
+            //                     changed={(event) => this.inputChangedHandler(event, id, (c+1), r)}
+            //                      />)
+            //             })
                             
-                });
+            //     });
+            //console.log(this.state.row.find(x => x.key === 'row11').value);
+                console.log(this.state.row);
+                const row = (this.rows(count));
                 console.log(count);
                 let frow = [];
+                let irowKey = 0;
                 while (row.length) {
                     let irow = row.splice(0, this.props.players.length + 1)
                     console.log(irow);
-                    frow.push(<div>{irow}</div>);
+                    irowKey++;
+                    frow.push(<div key={'irow'+irowKey}>{irow}</div>);
                 }
                 console.log(frow);
 
-            console.log(row);
         return (
+            
             <div className={classes.ScoreCard}>
-                <div><h1>{this.state.game}</h1></div>
+                
+                {this.props.registered ?
                 <div className={classes.ScoreCardRows}>{gameHistory}</div>
+                : null}
                 <div className={classes.ScoreCardRows}>{totals}</div>
                 <div className={classes.ScoreCardRows}>{gamePlayers}</div>
                 <div className={classes.ScoreCardRows}>{frow}</div>
@@ -194,7 +277,7 @@ console.log(totals);
                 </div>
                 <div className={classes.ScoreCardControls}>
                     <Button btnType='Success' clicked={this.newGameHandler}>NEW GAME</Button>
-                    <Button btnType='Save'>Save</Button>
+                    {this.props.registered ? <Button btnType='Save'>Save</Button> : null}
                     <Button btnType='Danger'>QUIT</Button>
                 </div>
             </div>
@@ -208,6 +291,7 @@ const mapStateToProps = state => {
     return {
             players: state.scoreCard.players,
             game: state.scoreCard.game,
+            registered: state.scoreCard.registered,
             token: state.auth.idToken,
     };
 };

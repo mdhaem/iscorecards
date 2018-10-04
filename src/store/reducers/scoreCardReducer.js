@@ -2,9 +2,9 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
 
 const initialState = {
-    
     game: '',
-    players: []
+    players: [],
+    registered: true,
 };
 
 const newScoreCard = ( state, action ) => {
@@ -12,7 +12,8 @@ const newScoreCard = ( state, action ) => {
     console.log(action.CardData.game, action.CardData.players, action);
     const returnValue = updateObject( state, {
         game: action.CardData.game,
-        players: action.CardData.players
+        players: action.CardData.players,
+        registered: action.CardData.registered,
     } );
     console.log(returnValue)
     return returnValue;
