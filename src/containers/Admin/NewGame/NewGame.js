@@ -146,7 +146,8 @@ class NewGame extends Component {
         return (
             <div className={classes.NewGame}>
                 <h1>New Game</h1>
-                <p className={classes.Instructions}>Enter the new game name and expected number of hands. Additional hands can always be added once the score card is displayed.</p>
+                <p className={classes.Instructions}>Enter the new game name and expected number of hands. 
+                Additional hands can always be added once the score card is displayed.</p>
                 {form}
             </div>
         );

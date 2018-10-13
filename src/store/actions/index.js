@@ -36,5 +36,6 @@ export {
 } from './getTeamsAction';
 
 export {
-    makeScoreCard
+    makeScoreCard,
+    addGameResult
 } from './scoreCardAction';

@@ -69,7 +69,7 @@ class UnregisteredGame extends Component {
 
     inputChangedHandler = (event, inputIdentifier) => {
         //alert('inputChangeHandler called');
-        console.log(event, inputIdentifier);
+        //console.log(event, inputIdentifier);
         const updatedSelectGameForm = {
             ...this.state.unregisteredGameForm
         };
@@ -85,7 +85,7 @@ class UnregisteredGame extends Component {
         updatedSelectGameForm[inputIdentifier] = updatedFormElement;
         
         const formIsValid = updatedSelectGameForm['gameName'].valid && updatedSelectGameForm['players'].valid;
-        console.log(formIsValid);
+        //console.log(formIsValid);
         this.setState({unregisteredGameForm: updatedSelectGameForm, formIsValid: formIsValid});
         //console.log(this.state);
     }
@@ -98,7 +98,7 @@ class UnregisteredGame extends Component {
             players: playersArray,
             registered: false
         }
-        console.log(scoreCard);
+        //console.log(scoreCard);
         this.props.onNewScoreCard(scoreCard);
         this.setState(this.state); 
         this.setState({redirect: true}); 

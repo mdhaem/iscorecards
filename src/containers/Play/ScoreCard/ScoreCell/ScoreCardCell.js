@@ -15,7 +15,7 @@ const scoreCardCell = (props) => {
                     placeholder={props.placeholder}
                     type={props.type} 
                     column={props.column}
-                    onBlur={props.changed}
+                    onBlur={null}
                     onChange={props.changed}
                     onFocus={props.focus} />;
     //console.log(cell);

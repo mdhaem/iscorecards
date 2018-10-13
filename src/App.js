@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Layout from './hoc/Layout/Layout';
 import Auth from './containers/Auth/Auth';
 import NewGame from './containers/Admin/NewGame/NewGame';
-import RegisteredGame from './containers/Play/RegisteredGame/SelectGame';
+import RegisteredGame from './containers/Play/RegisteredGame/RegisteredGame';
 import NewTeam from './containers/Admin/NewTeam/NewTeam';
 import NewPlayer from './containers/Admin/NewPlayer/NewPlayer';
 import UnregisteredGame from './containers/Play/UnregisteredGame/UnregisteredGame';
@@ -26,6 +26,7 @@ class App extends Component {
   render() {
     let routes = (
       <Switch>
+        <Route path="/logout" component={Logout} />
         <Route path="/uplay" component={UnregisteredGame} />
         <Route path="/auth" exact component={Auth} />
         <Route path="/scorecard" component={ScoreCard} />
@@ -35,7 +36,7 @@ class App extends Component {
     );
 
     if(this.props.isAuthenticated) {
-      alert(this.props.isAuthenticated);
+      //alert(this.props.isAuthenticated);
       routes = (
         <Switch>
             <Route path="/importhistory" component={ImportGameHistory} />
@@ -45,6 +46,7 @@ class App extends Component {
             <Route path="/newgame" component={NewGame} />
             <Route path="/rplay" component={RegisteredGame} />
             <Route path="/logout" component={Logout} />
+            <Route path="/" component={Home} />
           </Switch>
       );
     }
