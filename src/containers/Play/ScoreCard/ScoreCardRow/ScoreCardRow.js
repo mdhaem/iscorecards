@@ -24,7 +24,7 @@ class ScoreCardRow extends Component {
             newStateObjects.push({key: item, sum: 0,  value:[]});
         });
         
-        //console.log(newStateObjects);
+        console.log(newStateObjects);
         
         return(newStateObjects); 
     }
@@ -47,7 +47,7 @@ class ScoreCardRow extends Component {
             if(updatedState[column-1].value[row]){
                 updatedState[column-1].value[row].value = event.target.value;
             } else {
-                updatedState[column-1].value.push({value: event.target.value});
+                updatedState[column-1].value.push({key: inputIdentifier, value: event.target.value});
                 console.log(updatedState[column-1].value[row]);
             }
         }
@@ -110,7 +110,7 @@ class ScoreCardRow extends Component {
 
         //populate state row with {key:}
         const rows = this.rowArray(this.props.players.length);
-        //console.log(rows);
+        console.log(rows);
         let newRows = this.state.row;
         newRows = rows;
         this.setState({row: newRows});
@@ -130,6 +130,7 @@ class ScoreCardRow extends Component {
         })
         return rowArray;
     }
+
     handleFocus = (event) => {
         event.target.select();
     }
@@ -147,6 +148,42 @@ class ScoreCardRow extends Component {
         }
         
         this.props.onAddGameResult(newGame, this.props.token);  
+    }
+
+    addRowHandler = ( event ) => {
+        event.preventDefault();
+        let newHands = this.state.hands ;
+        let newRowArray = this.state.row;
+        
+        this.times (this.props.players.length) (c =>  { 
+            let id = 'row' + (this.state.hands+1) + (c+1);
+            newRowArray.push( {key: id, value: 0});
+        })
+        this.setState({row: newRowArray, hands: newHands + 1 });
+    }
+
+    deleteRowHandler = ( event ) => {
+        event.preventDefault();
+        let newHands = this.state.hands ;
+        let newRowArray = this.state.row;
+        const newTotalsArray = this.state.totals;
+        newTotalsArray.map(item => {
+            return console.log(item.value[0]) ;
+            //item.value.key.contains('row'+this.state.hand) ? 
+        })
+
+        console.log(newTotalsArray );
+        console.log(newRowArray );
+        console.log(this.props.players.length );
+        console.log(newRowArray.length - this.props.players.length, this.props.players.length );
+
+        newRowArray.splice(newRowArray.length - this.props.players.length, this.props.players.length);
+
+        
+        console.log(newRowArray );
+        this.setState({hands: newHands - 1, row: newRowArray, totals: newTotalsArray });
+        console.log(this.state.hands);
+        
     }
 
     ////////////////////////////////////////////////////////
@@ -213,7 +250,7 @@ class ScoreCardRow extends Component {
                             />)));
 
             let row = [];
-            this.times (8) (r =>
+            this.times (this.state.hands) (r =>
             {
                 let id = 'hand'+(r+1);
                 row.push(
@@ -258,8 +295,8 @@ class ScoreCardRow extends Component {
                 <div className={classes.ScoreCardRows}>{gamePlayers}</div>
                 <div className={classes.ScoreCardRows}>{frow}</div>
                 <div className={classes.ScoreCardControls}>
-                    <Button className={classes.Button} btnType='Action'>ADD ROW</Button>
-                    <Button btnType='Action'>DELETE ROW</Button>
+                    <Button className={classes.Button} btnType='Action' clicked={this.addRowHandler}>ADD ROW</Button>
+                    <Button btnType='Action' clicked={this.deleteRowHandler}>DELETE ROW</Button>
                 </div>
                 <div className={classes.ScoreCardControls}>
                     <Button btnType='Success' clicked={this.newGameHandler}>NEW GAME</Button>

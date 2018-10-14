@@ -42,7 +42,6 @@ class RegisteredGame extends Component {
     }
     
     checkValidity(value, rules) {
-        //console.log(value, rules);
         let isValid = true;
         if (!rules) {
             return true;
@@ -56,7 +55,6 @@ class RegisteredGame extends Component {
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
-        console.log(event, inputIdentifier);
         const updatedRegisteredGameForm = {
             ...this.state.registeredGameForm
         };
@@ -64,17 +62,11 @@ class RegisteredGame extends Component {
             ...updatedRegisteredGameForm[inputIdentifier]
         };
         updatedFormElement.value = event.target.value;
-        console.log(updatedFormElement);
-        console.log(updatedFormElement.value);
-        console.log(updatedFormElement.validation);
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation.changed);
-        //console.log(updatedFormElement.valid);
         updatedRegisteredGameForm[inputIdentifier] = updatedFormElement;
         
         const formIsValid = updatedRegisteredGameForm['games'].valid && updatedRegisteredGameForm['teams'].valid;
-        //console.log(formIsValid);
         this.setState({registeredGameForm: updatedRegisteredGameForm, formIsValid: formIsValid});
-        console.log(this.state);
     }
 
     registedGamePlayHandler = (event) => {
@@ -86,7 +78,6 @@ class RegisteredGame extends Component {
             players: team.split(','),
             registered: this.props.registered
         }
-        console.log(scoreCard);
         this.props.onNewScoreCard(scoreCard);
         this.setState(this.state); 
         this.setState({redirect: true}); 
@@ -97,36 +88,27 @@ class RegisteredGame extends Component {
         this.props.onFetchGames(this.props.tokenId, this.props.userId);
         this.props.onFetchTeams(this.props.tokenId, this.props.userId);
         
-        console.log(this.props.games);
         if(this.props.games){
             let gameOptions = [];
             gameOptions.push( {value: '...chose a game', displayValue: '...chose a game'} );
-            this.props.games.map((game, index) => {
-                gameOptions.push( { value:game.game, displayValue: game.game} );
+            this.props.games.map((item, index) => {
+                gameOptions.push( { value:item.game, displayValue: item.game} );
                 return gameOptions;
             })
-            console.log(gameOptions);
             newState.registeredGameForm.games.elementConfig.options = gameOptions;
         }
 
-        console.log(this.props.players);
         if(this.props.players){
             let playersOptions = [];
             playersOptions.push( {value: '...chose a team', displayValue: '...chose a team'} );
-            this.props.team.map((player, index) => {
-                playersOptions.push( { value:player.player, displayValue: player.player} );
+            this.props.team.map((item, index) => {
+                playersOptions.push( { value:item.player, displayValue: item.player} );
                 return playersOptions;
             })
-            console.log(playersOptions);
             newState.registeredGameForm.teams.elementConfig.options = playersOptions;
         }
-
-
-
-    console.log(newState);    
+   
         this.setState({state: newState});
-    console.log(this.state);
-        //this.setState(this.state); 
       }
 
     render() {
@@ -137,7 +119,7 @@ class RegisteredGame extends Component {
                 config: this.state.registeredGameForm[key]
             });
         }
-        console.log(formElementsArray);
+
         let form = (
             <form onSubmit={this.registedGamePlayHandler}>
                 {formElementsArray.map(formElement => (
