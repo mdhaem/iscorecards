@@ -7,6 +7,7 @@ import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
+import {checkValidity} from '../../../Shared/utility';
 
 class RegisteredGame extends Component {
     state = {
@@ -40,19 +41,6 @@ class RegisteredGame extends Component {
         },
         formIsValid: false
     }
-    
-    checkValidity(value, rules) {
-        let isValid = true;
-        if (!rules) {
-            return true;
-        }
-
-        if(rules.changed) {
-            isValid = value.includes('...chose a');
-        }
-        
-        return isValid;
-    }
 
     inputChangedHandler = (event, inputIdentifier) => {
         const updatedRegisteredGameForm = {
@@ -62,7 +50,7 @@ class RegisteredGame extends Component {
             ...updatedRegisteredGameForm[inputIdentifier]
         };
         updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation.changed);
+        updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation.changed);
         updatedRegisteredGameForm[inputIdentifier] = updatedFormElement;
         
         const formIsValid = updatedRegisteredGameForm['games'].valid && updatedRegisteredGameForm['teams'].valid;

@@ -7,6 +7,7 @@ import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
+import {checkValidity} from '../../../Shared/utility';
 
 class UnregisteredGame extends Component {
     state = {
@@ -40,32 +41,6 @@ class UnregisteredGame extends Component {
         formIsValid: false,
         redirect: false
     }
-    
-    checkValidity(value, rules) {
-        //console.log(value, rules);
-        let isValid = true;
-        if (!rules) {
-            return true;
-        }
-
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid
-        }
-
-        if (rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid
-        }
-
-        if(rules.changed) {
-            isValid = value.includes('...chose a');
-        }
-        
-        return isValid;
-    }
 
     inputChangedHandler = (event, inputIdentifier) => {
         //alert('inputChangeHandler called');
@@ -80,7 +55,7 @@ class UnregisteredGame extends Component {
 
         //console.log(updatedFormElement.value);
         //console.log(updatedFormElement.validation);
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation.changed);
+        updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation.changed);
         //console.log(updatedFormElement.valid);
         updatedSelectGameForm[inputIdentifier] = updatedFormElement;
         
