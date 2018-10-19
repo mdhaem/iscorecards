@@ -8,7 +8,7 @@ import classes from './NewTeam.css';
 import Button from '../../../components/UI/Button/Button';
 import * as actions from '../../../store/actions';
 import FormCode from './NewTeamForm';
-import { updateObject } from '../../../store/utility'; 
+import { updateObject } from '../../../Shared/utility'; 
 
 class SelectGame extends Component {
     state = {

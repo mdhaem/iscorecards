@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../utility';
+import { updateObject } from '../../Shared/utility';
 
 const initialState = {
     plist: [{firstName: "Mike", lastName: "DHaem", user: "IuTewWb2H8PN2RyBuX6DJp83jIx2"}],
