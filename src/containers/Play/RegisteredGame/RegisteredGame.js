@@ -7,7 +7,7 @@ import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
-import {checkValidity} from '../../../Shared/utility';
+import {updateObject, checkValidity} from '../../../Shared/utility';
 
 class RegisteredGame extends Component {
     state = {
@@ -43,15 +43,16 @@ class RegisteredGame extends Component {
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
-        const updatedRegisteredGameForm = {
-            ...this.state.registeredGameForm
-        };
-        const updatedFormElement = { 
-            ...updatedRegisteredGameForm[inputIdentifier]
-        };
-        updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation.changed);
-        updatedRegisteredGameForm[inputIdentifier] = updatedFormElement;
+
+        const updatedFormElement = updateObject(this.state.registeredGameForm[inputIdentifier], {
+            value: event.target.value,
+            valid: checkValidity(event.target.value, this.state.registeredGameForm[inputIdentifier]),
+            touched: true
+        });
+
+        const updatedRegisteredGameForm = updateObject(this.state.registeredGameForm, {
+            [inputIdentifier]: updatedFormElement
+        });
         
         const formIsValid = updatedRegisteredGameForm['games'].valid && updatedRegisteredGameForm['teams'].valid;
         this.setState({registeredGameForm: updatedRegisteredGameForm, formIsValid: formIsValid});

@@ -6,7 +6,7 @@ import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
-import {checkValidity} from '../../../Shared/utility'
+import {updateObject, checkValidity} from '../../../Shared/utility'
 
 class NewGame extends Component {
     state = {
@@ -40,16 +40,16 @@ class NewGame extends Component {
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
-        const updatedNewGameForm = {
-            ...this.state.newGameForm
-        };
-        const updatedFormElement = { 
-            ...updatedNewGameForm[inputIdentifier]
-        };
-        updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
-        updatedFormElement.touched = true;
-        updatedNewGameForm[inputIdentifier] = updatedFormElement;
+        
+        const updatedFormElement = updateObject(this.state.newGameForm[inputIdentifier], {
+            value: event.target.value,
+            valid: checkValidity(event.target.value, this.state.newGameForm[inputIdentifier]),
+            touched: true
+        });
+
+        const updatedNewGameForm = updateObject(this.state.newGameForm, {
+            [inputIdentifier]: updatedFormElement
+        });
         
         let formIsValid = true;
         for (let inputIdentifier in updatedNewGameForm) {
