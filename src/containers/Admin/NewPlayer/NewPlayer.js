@@ -5,7 +5,7 @@ import { reduxForm, formValueSelector, reset } from 'redux-form'
 import classes from './NewPlayer.css';
 //import buttonClasses from '../../../components/UI/Button/Button.css';
 import * as actions from '../../../store/actions';
-import FormCode from './NewPlayerForm';
+import FormCode from './NewPlayerFormF';
 
 
 class newPlayer extends Component {

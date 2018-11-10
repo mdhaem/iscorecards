@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 
 import Layout from './hoc/Layout/Layout';
 import Auth from './containers/Auth/Auth';
-import NewGame from './containers/Admin/NewGame/NewGame';
+import NewGame from './containers/Admin/NewGame/NewGameForm';
 import RegisteredGame from './containers/Play/RegisteredGame/RegisteredGame';
 import NewTeam from './containers/Admin/NewTeam/NewTeam';
-import NewPlayer from './containers/Admin/NewPlayer/NewPlayer';
+import NewPlayer from './containers/Admin/NewPlayer/NewPlayerForm';
 import UnregisteredGame from './containers/Play/UnregisteredGame/UnregisteredGame';
 import ScoreCard from './containers/Play/ScoreCard/ScoreCard';
 import ImportGameHistory from './containers/Admin/ImportGameHistory/ImportGameHistory';

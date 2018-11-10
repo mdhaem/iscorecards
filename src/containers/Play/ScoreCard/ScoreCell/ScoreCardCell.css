@@ -3,10 +3,28 @@
     width: 4em;
 }
 
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+@media (max-width: 656px) {
+    .ScoreCardCell {
+        width: 3em;
+        font-size: 80%;
+    }
+}
+@media (max-width: 575px) {
+    .ScoreCardCell {
+        width: 3em;
+        font-size: 80%;
+    }
+}
+@media (max-width: 406px) {
+    .ScoreCardCell {
+        width: 2em;
+        font-size: 60%;
+    }
 }

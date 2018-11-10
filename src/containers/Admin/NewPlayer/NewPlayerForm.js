@@ -1,71 +1,98 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import * as Yup from 'yup';
+import { withFormik, Form, Field } from 'formik';
+import axios from '../../../store/axios-data'
 
-import buttonClasses from '../../../components/UI/Button/Button.css';
 import classes from './NewPlayer.css';
+import Spinner from '../../../components/UI/Spinner/Spinner'
+import Button from '../../../components/UI/Button/Button'
 
-
-const alphaNumeric = value =>
-    value && /[^a-zA-Z ]/i.test(value) ? 'Only alphabetic characters' : undefined
-const required = value => (value ? undefined : 'Required')
-const maxLength = max => value =>
-    value && value.length > max ? `Must be ${max} characters or less` : undefined
-const maxLength15 = maxLength(15)
-const minLength = min => value =>
-    value && value.length < min ? `Must be ${min} characters or more` : undefined
-const minLength2 = minLength(2)
-
-  const renderField = ({
-    input,
-    label,
-    plcholder,
-    type,
-    meta: { touched, error, warning }
-  }) => (
-      
-    <div>
-        
-        <div>
-        <label>{label}</label>
-            <input {...input} placeholder={plcholder} className={classes.Input} type={type} />
+const newPlayerForm = ({
+    values,
+    errors,
+    touched,
+    isSubmitting
+}) => {
+    return ( 
+        <div className={classes.NewPlayer}>
+        <h1>New Player</h1>
+        <p className={classes.Instructions}>Enter the new game name and expected number of hands. 
+        Additional hands can always be added once the score card is displayed.</p>
+        <Form>
+            {isSubmitting ? <Spinner /> : null}
+            {(values.exists || values.playerAdded )&& <p>{values.message}</p>}
+            {errors.message && <p>{errors.firstName}</p>}
+            <div>
+                {touched.firstName && errors.firstName && <p>{errors.firstName}</p>}
+                <label>First Name</label>
+                <Field type="text" name="firstName" className={classes.Input} placeholder="Enter first name..." />
+            </div>
+            <div>
+                {touched.lastName && errors.lastName && <p>{errors.lastName}</p>}
+                <label>Last Name</label>
+                <Field type="text" name="lastName" className={classes.Input} placeholder="Enter last name..." />
+            </div>
+                
+            <Button btnType="Success" type="submit" disabled={isSubmitting}>Save New Player</Button>
+        </Form>
         </div>
-        <div>
-            {touched &&
-            ((error && <span>{error}</span>) ||
-                (warning && <span>{warning}</span>))}
-        </div>
-    </div>
-  )
-
-let FormCode = props => {
-  const { handleSubmit, pristine, submitting, reset } = props;
-  return (
-    <form onSubmit={ handleSubmit }>
-      <div>
-        <Field 
-            name="firstName" 
-            component={renderField} 
-            label="First Name" 
-            validate={[required, maxLength15, minLength2, alphaNumeric]}
-            plcholder="enter first name..."/>
-      </div>
-      <div>
-        <Field 
-            name="lastName"
-            component={renderField} 
-            label="Last Name" 
-            validate={[required, maxLength15, minLength2, alphaNumeric]}
-            plcholder="enter last name..."/>
-      </div>
-      <div className="form-group">
-        <button type="submit" className={buttonClasses.Button} disabled={pristine || submitting}>SAVE</button>
-        <button type="button" className={buttonClasses.Button} disabled={pristine || submitting} onClick={reset}>CANCEL</button>
-      </div>
-    </form>
-  )
+    )
 }
-FormCode = reduxForm({
-  form: 'contact',
-})(FormCode);
 
-export default FormCode;
+const FormikNewPlayerForm = withFormik({
+    mapPropsToValues({ firstName, lastName }) {
+        return {
+            firstName: firstName || '',
+            lastName: lastName || '',
+            exists: false,
+            playerAdded: false
+
+        }
+    },
+    validationSchema: Yup.object().shape({
+        firstName: Yup.string().min(2, 'First name must be at least 2 charters.').required('First name is required.'),
+        lastName: Yup.string().min(2, 'Last name must be at least 3 charters.').required('Last name is required.')
+    }),
+    handleCancel (values){
+        values.cancel = true
+    },
+    handleSubmit(values, { resetForm, setErrors, setSubmitting } ) {
+        const newPlayer = {
+            user: localStorage.getItem('userId'),
+            firstName: values.firstName,
+            lastName: values.lastName,
+            fullName: values.firstName + ' ' + values.lastName
+        }
+
+        //get all games for user
+        const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + newPlayer.user + '"';
+        axios.get( '/players.json' + queryParams).then( response => {
+            const result = Object.keys(response.data).map(i => response.data[i])
+            //if game exists set exists to true
+            values.exists = result.find(item => item.fullName === newPlayer.fullName);
+            if(values.exists){
+                values.message = 'That player already exists.'
+                setSubmitting(false)
+            } else {
+                //if game does not exist set exist to false and save new game 
+                values.exist = false;
+                axios.post( '/players.json', newPlayer) //?auth=' + token, gameData )
+                .then( response => {
+                    setErrors({firstName: newPlayer.fullName +  ' was added.'})
+                    setSubmitting(false)
+                } )
+                .catch( error => {
+                    setErrors({firstName: newPlayer.fullName +  ' was NOT added'})
+                    setSubmitting(false)
+                } );
+            }
+
+        } )
+        .catch( error => {
+            setSubmitting(false)
+            setErrors({firstName: newPlayer.fullName + ' error while checking if player exists'})
+        } );
+    }
+})(newPlayerForm)
+
+export default FormikNewPlayerForm
