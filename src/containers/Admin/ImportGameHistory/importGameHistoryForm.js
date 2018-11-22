@@ -5,7 +5,7 @@ import * as classes from './ImportGameHistory.css';
 //import Aux from '../../../hoc/Aux/Aux';
 
 const FormCode = props => {
-  const { error, handleSubmit, pristine, reset, submitting } = props
+  const { error, handleSubmit, pristine, reset, submitting, changed=[] } = props
   console.log(props.gamesOptions);
   return (
     <form onSubmit={handleSubmit}>
@@ -43,12 +43,13 @@ const FormCode = props => {
         </Field>
       </div>
       <div>
-        { props.players.map((players, idx) => (
+        <table>
+        { props.changed.map((players, idx) => (
              
-            
-            <div className={classes.ScoreInputLabel} key={idx}>
-            <label className={classes.ScoreInputLabel}>{players.player}:</label>
-            
+            <tr>
+            <div key={idx}>
+            <td width="70%"><label className={classes.ScoreInputLabel}>{players.player}:</label></td>
+            <td>
               <input
                 className={classes.ScoreInput}
                 type="number"
@@ -56,9 +57,11 @@ const FormCode = props => {
                 value={players.name}
                 //onChange={this.handleShareholderNameChange(idx)}
               />
-              
+              </td>
             </div>
+            </tr>
           ))}
+          </table>
       </div>
         {error && <strong>{error}</strong>}
       <div>

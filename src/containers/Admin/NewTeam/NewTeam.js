@@ -33,7 +33,8 @@ class SelectGame extends Component {
 
     componentDidMount() {
         const newState = this.state;
-        axios.get('/players.json')
+        const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + this.props.user + '"';
+        axios.get('/players.json' + queryParams)
           .then(res => {
             const result = Object.keys(res.data).map(i => res.data[i]);
             const playerOptions = [{value: "selectplayer", displayValue: "...select player"}];
