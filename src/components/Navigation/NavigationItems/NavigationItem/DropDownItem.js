@@ -29,6 +29,8 @@ class DropdownMenuItem extends Component {
                     <DropdownItem><NavLink to="/newteam">New Team</NavLink></DropdownItem>
                     <DropdownItem divider />
                     <DropdownItem><NavLink to="/importhistory">Import Scores</NavLink></DropdownItem>
+                    <DropdownItem><NavLink to="/updatehistory">Update Scores</NavLink></DropdownItem>
+
                 </DropdownMenu>
                 </Dropdown>
           

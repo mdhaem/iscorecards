@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 
 import Layout from './hoc/Layout/Layout';
 import Auth from './containers/Auth/Auth';
-import NewGame from './containers/Admin/NewGame/NewGameForm';
+import NewGame from './containers/Admin/NewGame/NewGame';
 import RegisteredGame from './containers/Play/RegisteredGame/RegisteredGame';
 import NewTeam from './containers/Admin/NewTeam/NewTeam';
 import NewPlayer from './containers/Admin/NewPlayer/NewPlayerForm';
 import UnregisteredGame from './containers/Play/UnregisteredGame/UnregisteredGame';
 import ScoreCard from './containers/Play/ScoreCard/ScoreCard';
 import ImportGameHistory from './containers/Admin/ImportGameHistory/ImportGameHistoryFormik';
+import UpdateGameHistory from './containers/Admin/UpdateGameHistory/UpdateGameHistory'
 import Logout from './containers/Auth/Logout/Logout';
 import Home from './components/Home/Home';
 
@@ -40,6 +41,7 @@ class App extends Component {
       routes = (
         <Switch>
             <Route path="/importhistory" component={ImportGameHistory} />
+            <Route path="/updatehistory" component={UpdateGameHistory} />
             <Route path="/scorecard" component={ScoreCard} />
             <Route path="/newplayer" component={NewPlayer} />
             <Route path="/newteam" component={NewTeam} />
