@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "engines": {
     "npm": "6.x"
-    },
+  },
   "private": true,
   "dependencies": {
     "ajv": "^6.5.2",
@@ -52,7 +52,6 @@
     "react-formik-ui": "^0.2.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
-    "react-saga": "^0.2.6",
     "react-test-renderer": "^16.7.0",
     "reactstrap": "^6.4.0",
     "redux": "^4.0.0",
