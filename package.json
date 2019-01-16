@@ -1,6 +1,9 @@
 {
   "name": "iscorecards",
   "version": "0.1.0",
+  "engines": {
+    "npm": "6.x"
+    },
   "private": true,
   "dependencies": {
     "ajv": "^6.5.2",
