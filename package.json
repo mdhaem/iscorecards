@@ -2,7 +2,7 @@
   "name": "iscorecards",
   "version": "0.1.0",
   "engines": {
-    "npm": "6.x"
+    "npm": "6.5.0"
   },
   "private": true,
   "dependencies": {
