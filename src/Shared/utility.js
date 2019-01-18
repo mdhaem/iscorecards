@@ -7,6 +7,7 @@ export const updateObject = (oldObject, updatedProperties) => {
 };
 
 export const checkValidity = (value, rules) => {
+    console.log(typeof value, value.length, rules)
     let isValid = true;
     if (!rules) {
         return true;
@@ -17,7 +18,8 @@ export const checkValidity = (value, rules) => {
     }
     
     if (rules.required) {
-        isValid = value.trim() !== '' && isValid;
+        isValid = value.trim() !== '' && value.length > 0 && isValid;
+        console.log(isValid)
     }
 
     if (rules.minLength) {
@@ -38,5 +40,17 @@ export const checkValidity = (value, rules) => {
         isValid = pattern.test(value) && isValid
     }
 
+    if (rules.isChars) {
+        const pattern = /^[a-zA-Z\s]*$/
+        console.log(pattern.test(value))
+        isValid = pattern.test(value) && value.trim() !== ''  && isValid
+    }
+
+    if(rules.arrayLength) {
+        const valueArray = value.split(' ')
+        isValid = valueArray.length >= rules.arrayLength && isValid
+    }
+
+    console.log(isValid)
     return isValid;
 }
