@@ -24,8 +24,6 @@ import {reducer as formReducer } from 'redux-form';
 const devEnv = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null
 const composeEnhancers = devEnv || compose;
 
-//const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
-
 const rootReducer = combineReducers({
     importScoresReducer: importScoresReducer,
     cardPlay: cardPlayReducer,

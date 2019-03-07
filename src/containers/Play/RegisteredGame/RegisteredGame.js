@@ -1,70 +1,71 @@
 import React, {Component} from  'react';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
+import Select from 'react-select'
 
 import classes from './SelectGame.css';
-import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
-import {updateObject, checkValidity} from '../../../Shared/utility';
+import { checkValidity} from '../../../Shared/utility';
 
 class RegisteredGame extends Component {
     state = {
-        registeredGameForm: {
-            
-            games: {
-                elementType: 'select',
-                elementConfig: {
-                    options: []
-                },
-                value: 8,
-                validation: {
-                    changed: true
-                },
-                valid: false,
-            },
-            teams: {
-                elementType: 'select',
-                elementConfig: {
-                    options: [
-                        {value: '...chose a team', displayValue: '...chose a team'},
-                        {value: 'Mike, Sandy', displayValue: 'Mike, Sandy'}
-                    ]
-                },
-                value: 8,
-                validation: {
-                    changed: true
-                },
-                valid: false
-            }
-        },
-        formIsValid: false
+        formIsValid: false,
+        selectedGame: '',
+        selectedTeam: '',
+        gameOptionTouched: false,
+        teamOptionTouched: false
     }
 
-    inputChangedHandler = (event, inputIdentifier) => {
-
-        const updatedFormElement = updateObject(this.state.registeredGameForm[inputIdentifier], {
-            value: event.target.value,
-            valid: checkValidity(event.target.value, this.state.registeredGameForm[inputIdentifier]),
-            touched: true
-        });
-
-        const updatedRegisteredGameForm = updateObject(this.state.registeredGameForm, {
-            [inputIdentifier]: updatedFormElement
-        });
-        
-        const formIsValid = updatedRegisteredGameForm['games'].valid && updatedRegisteredGameForm['teams'].valid;
-        this.setState({registeredGameForm: updatedRegisteredGameForm, formIsValid: formIsValid});
+    handleChange = (selectedOption, optionMeta) => {
+        // console.log(selectedOption, 'SELECTED OPTION')
+        // console.log(optionMeta.name, 'OPTION META NAME')
+        switch(optionMeta.name){
+            case "selectedGame":
+                // this.setState({ selectedGame: selectedOption.value })
+                if(checkValidity(selectedOption.value, {changed: true})){
+                    this.setState(
+                        {
+                            selectedGame: selectedOption.value, 
+                            gameOptionTouched: true
+                        }, () => {
+                            const formIsValid = this.state.gameOptionTouched && this.state.teamOptionTouched
+                            this.setState({ formIsValid })
+                            // console.log(this.state, 'UPDATED STATE')
+                        })
+                }
+                break
+            case "selectedTeam":
+                // console.log(selectedOption.value.toString())
+                if(checkValidity(selectedOption.value.toString(), {changed: true})){
+                    this.setState(
+                        {
+                            selectedTeam: selectedOption.value, 
+                            teamOptionTouched: true
+                        }, () => {
+                            const formIsValid = this.state.gameOptionTouched && this.state.teamOptionTouched
+                            this.setState({ formIsValid })
+                            // console.log(this.state, 'UPDATED STATE')
+                        })
+                }
+                break
+            default:
+                console.log('ERROR - SELECTED OPTION OUT OF RANGE')
+        }
+        // console.log(this.state, 'UPDATED STATE')
     }
 
     registedGamePlayHandler = (event) => {
         event.preventDefault();
-        const game = this.state.registeredGameForm.games.value;
-        const team = this.state.registeredGameForm.teams.value;
+        const firstNames = []
+        this.state.selectedTeam.map(item => {
+            return firstNames.push(item.split(' ')[0])
+        })
+        console.log(firstNames)
         const scoreCard = {
-            game: game,
-            players: team.split(','),
+            game: this.state.selectedGame,
+            players: firstNames,
             registered: this.props.registered
         }
         this.props.onNewScoreCard(scoreCard);
@@ -73,55 +74,48 @@ class RegisteredGame extends Component {
     }
 
     componentDidMount(props) {
-        const newState = this.state;
-        this.props.onFetchGames(this.props.tokenId, this.props.userId);
-        this.props.onFetchTeams(this.props.tokenId, this.props.userId);
-        
-        if(this.props.games){
-            let gameOptions = [];
-            gameOptions.push( {value: '...chose a game', displayValue: '...chose a game'} );
-            this.props.games.map((item, index) => {
-                gameOptions.push( { value:item.game, displayValue: item.game} );
-                return gameOptions;
-            })
-            newState.registeredGameForm.games.elementConfig.options = gameOptions;
-        }
-
-        if(this.props.players){
-            let playersOptions = [];
-            playersOptions.push( {value: '...chose a team', displayValue: '...chose a team'} );
-            this.props.team.map((item, index) => {
-                playersOptions.push( { value:item.player, displayValue: item.player} );
-                return playersOptions;
-            })
-            newState.registeredGameForm.teams.elementConfig.options = playersOptions;
-        }
-   
-        this.setState({state: newState});
+        this.props.onFetchGames(this.props.tokenId, this.props.userId) 
+        this.setState({games: this.props.games})
+        this.props.onFetchTeams(this.props.tokenId, this.props.userId)
       }
 
     render() {
-        const formElementsArray = [];
-        for (let key in this.state.registeredGameForm) {
-            formElementsArray.push({
-                id: key,
-                config: this.state.registeredGameForm[key]
-            });
-        }
+        // console.log(this.props.games, 'PROPS GAMES')
+        // console.log(this.props.teams, 'PROPS TEAMS')
+        // console.log(this.state.selectedGame, 'STATE SELECTED GAME')
+        // console.log(this.state.selectedTeam, 'STATE SELECTED TEAM')
+        
+        const gameOptions = []
+        this.props.games.map((item, index) => {
+            gameOptions.push({value: item.game, label: item.game})
+            return gameOptions
+        })
+        const teamOptions = []
+        this.props.teams.map((item, index) => {
+            teamOptions.push({value: item.team, label: item.team})
+            return teamOptions
+        })
 
         let form = (
-            <form onSubmit={this.registedGamePlayHandler}>
-                {formElementsArray.map(formElement => (
-                    <Input 
-                        key={formElement.id}
-                        elementType={formElement.config.elementType}
-                        elementConfig={formElement.config.elementConfig}
-                        value={formElement.config.value}
-                        invalid={!formElement.config.valid}
-                        shouldValidate={formElement.config.validation}
-                        touched={formElement.config.touched}
-                        changed={(event) => this.inputChangedHandler(event, formElement.id)} />
-                ))}
+            <form onSubmit={this.registedGamePlayHandler}> 
+            <div>
+                <Select
+                    name="selectedGame"
+                    placeholder="...select a game"
+                    value={this.selectedOption}
+                    onChange={this.handleChange}
+                    options={gameOptions}
+                />
+            </div>
+            <div>
+                <Select
+                    name="selectedTeam"
+                    placeholder="...select a team"
+                    value={this.selectedOption}
+                    onChange={this.handleChange}
+                    options={teamOptions}
+                />
+            </div>
                 <Button btnType="Danger">CANCEL</Button>
                 <Button btnType="Success" disabled={!this.state.formIsValid}>CONTINUE TO SCORECARD</Button>
             </form>
@@ -134,6 +128,7 @@ class RegisteredGame extends Component {
             <div className={classes.SelectGame}>
                 <h1>Play</h1>
                 <p className={classes.Instructions}>Select game then team.</p>
+                <p>{this.state.selectedGame} {this.state.selectedTeam}</p>
                 {this.state.redirect?<Redirect to="/scorecard" />:null}
                 {form}
             </div>
@@ -144,11 +139,12 @@ class RegisteredGame extends Component {
 const mapStateToProps = state => {
     return {
         game: state.scoreCard.game,
-        player: state.scoreCard.players,
+        // player: state.scoreCard.players,
         registered: state.scoreCard.registered,
 
-        games:state.games.games,
-        players: state.teams.plist,
+        games: state.games.games,
+        teams: state.teams.teams,
+        // players: state.teams.plist,
         tokenId: state.auth.idToken,
         userId: state.auth.localId
     };

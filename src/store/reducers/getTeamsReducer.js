@@ -2,13 +2,14 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../Shared/utility';
 
 const initialState = {
-    teams: [{team: [], user: "IuTewWb2H8PN2RyBuX6DJp83jIx2"}],
+    teams: [{team: [], user: ''}],
     error: false
 };
 
 const fetchTeams = (state, action) => {
-    console.log(action.games);
-    console.log(state);
+    // console.log('STATE: ', state);
+    // console.log('ACTION.TEAMS: ', action.teams);
+    
     return updateObject( state, {
         teams: action.teams,
         error: false

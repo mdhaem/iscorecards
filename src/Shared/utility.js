@@ -1,5 +1,5 @@
 export const updateObject = (oldObject, updatedProperties) => {
-    console.log(...oldObject);
+    // console.log(...oldObject);
     return {
         ...oldObject,
         ...updatedProperties
@@ -7,19 +7,20 @@ export const updateObject = (oldObject, updatedProperties) => {
 };
 
 export const checkValidity = (value, rules) => {
-    console.log(typeof value, value.length, rules)
+    // console.log(typeof value, value.length, rules)
     let isValid = true;
     if (!rules) {
         return true;
     }
 
     if(rules.changed) {
-        isValid = value.includes('...chose a');
+        isValid = !value.includes('...select');
+        // console.log(isValid)
     }
     
     if (rules.required) {
         isValid = value.trim() !== '' && value.length > 0 && isValid;
-        console.log(isValid)
+        // console.log(isValid)
     }
 
     if (rules.minLength) {
@@ -42,7 +43,7 @@ export const checkValidity = (value, rules) => {
 
     if (rules.isChars) {
         const pattern = /^[a-zA-Z\s]*$/
-        console.log(pattern.test(value))
+        // console.log(pattern.test(value))
         isValid = pattern.test(value) && value.trim() !== ''  && isValid
     }
 
@@ -51,6 +52,6 @@ export const checkValidity = (value, rules) => {
         isValid = valueArray.length >= rules.arrayLength && isValid
     }
 
-    console.log(isValid)
+    // console.log(isValid)
     return isValid;
 }

@@ -1,64 +1,76 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
+import * as moment from 'moment'
+// import axios from '../../../../store/axios-data';
 
 import * as classes from './ScoreCardRow.css';
-import ScoreCardCell from '../ScoreCell/ScoreCardCell';
+// import ScoreCardCell from '../ScoreCell/ScoreCardCell';
+import {saveGameTotals} from '../../../../Shared/saveGameTotals'
 import Button from '../../../../components/UI/Button/Button';
 //import Aux from '../../../../hoc/Aux/Aux';
+import ScoreCardRows from '../ScoreCardRows/ScoreCardRows'
+import ScoreCardPlayers from '../ScoreCardPlayers/ScoreCardPlayers'
+import ScoreCardTotals from '../ScoreCardTotals/ScoreCardTotals'
+import ScoreCardGameHistory from '../ScoreCardGameHistory/ScoreCardGameHistory'
 
 class ScoreCardRow extends Component {
     state = {
+        game: this.props.game,
         totals: [],
         row: [],
-        hands: 9,
-        redirect: false
+        hands: 2,
+        players: this.props.players,
+        count: this.props.players.length,
+        redirect: false,
+        gameNumber: 1,
+        message: ''
     }
 
     updateState = () => {
         this.setState(this.state); 
         const players = this.props.players;
-        console.log(this.props.players);
+        // console.log(this.props.players);
         let newStateObjects = [];
         players.forEach(item => {
             newStateObjects.push({key: item, sum: 0,  value:[]});
         });
         
-        console.log(newStateObjects);
+        // console.log(newStateObjects);
         
         return(newStateObjects); 
     }
 
     inputChangedHandler = (event, inputIdentifier, column, row) => {
-        console.log('#######################################');
-        console.log('event.target.value', event.target.value);
-        console.log('inputIdentifier', inputIdentifier);
-        console.log('column', column);
-        console.log('row', row);
+        // console.log('#######################################');
+        // console.log('event.target.value', event.target.value);
+        // console.log('inputIdentifier', inputIdentifier);
+        // console.log('column', column);
+        // console.log('row', row);
 
         const updatedRow = this.state.row;
         updatedRow.find(x => x.key === inputIdentifier).value = event.target.value;
         this.setState({row: updatedRow});
 
         const updatedState = this.state.totals;
-        console.log('updatedState[column-1].value[row]', updatedState[column-1].value[row]);
+        // console.log('updatedState[column-1].value[row]', updatedState[column-1].value[row]);
         if(event.target.value >= 0){
             //console.log(updatedState[column-1].value[row]);
             if(updatedState[column-1].value[row]){
                 updatedState[column-1].value[row].value = event.target.value;
             } else {
                 updatedState[column-1].value.push({key: inputIdentifier, value: event.target.value});
-                console.log(updatedState[column-1].value[row]);
+                // console.log(updatedState[column-1].value[row]);
             }
         }
-        console.log('updatedState', updatedState);
-        console.log('updatedState[column-1].value', updatedState[column-1].value);
+        // console.log('updatedState', updatedState);
+        // console.log('updatedState[column-1].value', updatedState[column-1].value);
         const newSum = parseInt(this.sumArray(updatedState[column-1].value), 10);
-        console.log('newSum', newSum);
+        // console.log('newSum', newSum);
         updatedState[column-1].sum = newSum;
         this.setState({totals: updatedState});
-        console.log('this.state.totals',this.state.totals);
-        console.log('this.state.totals[column-1].sum', this.state.totals[column-1].sum);
+        // console.log('this.state.totals',this.state.totals);
+        // console.log('this.state.totals[column-1].sum', this.state.totals[column-1].sum);
         this.setState(this.state);
     }
 
@@ -67,14 +79,14 @@ class ScoreCardRow extends Component {
         updatedRow.map( item => item.value = 0);
         this.setState({row: updatedRow});
         const updatedTotals = this.state.totals;
-        console.log(updatedTotals);
+        // console.log(updatedTotals);
         updatedTotals.map( item => {
             item.sum = 0; 
             item.value = [];
             return updatedTotals;
         });
         this.setState({totals: updatedTotals});
-        console.log(updatedTotals);
+        // console.log(updatedTotals);
     }
 
     quitHandler = () => {
@@ -91,7 +103,6 @@ class ScoreCardRow extends Component {
       }
      
     sumArray = (stuff) => {
-        console.log(stuff);
         let sum = 0;
         stuff.forEach(item => {
             if(item.value !== "") {
@@ -110,11 +121,11 @@ class ScoreCardRow extends Component {
 
         //populate state row with {key:}
         const rows = this.rowArray(this.props.players.length);
-        console.log(rows);
+        // console.log(rows);
         let newRows = this.state.row;
         newRows = rows;
         this.setState({row: newRows});
-        //console.log(this.state.row);
+        // console.log(this.state.row);
     };
 
     rowArray() {
@@ -135,26 +146,80 @@ class ScoreCardRow extends Component {
         event.target.select();
     }
 
+    // addGameScoreHandler = ( event ) => {
+    //     const gameFinalScore = {
+    //         user: localStorage.getItem('userId'),
+    //         scoresDate: moment().format('MM-DD-YYYY'),
+    //         game: this.state.game,
+    //         team: this.state.players,
+    //         scores: this.state.totals,
+    //         gameNumber: this.state.gameNumber,
+    //     }
+    //     const filter = {
+    //         game: gameFinalScore.game,
+    //         scoresDate: gameFinalScore.scoresDate,
+    //         team: gameFinalScore.team
+    //       };
+    //     //get all games for user
+    //     //https://scorecards-482b8.firebaseio.com/history.json
+    //     const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + gameFinalScore.user + '"';
+    //     axios.get( '/history.json' + queryParams).then( response => {
+    //         console.log(response)
+    //         const result = Object.keys(response.data).map(i => response.data[i])
+    //         console.log(result)
+    //         //if game exists set exists to true
+    //         const findResult = result.find(item => item.game === gameFinalScore.game 
+    //             && item.scoresDate === gameFinalScore.scoresDate
+    //             && item.team === gameFinalScore.team)
+
+    //         const exists = result.filter((item) => {
+    //             for (var key in filter) {
+    //               if (item[key] === undefined || item[key] != filter[key]){
+    //                     return false;
+    //                 }
+    //             }
+    //             return true;
+    //           });
+
+    //         // this.state.exists = result.find(item => item.game === gameFinalScore.game 
+    //         //     && item.scoresDate === gameFinalScore.scoresDate
+    //         //     && item.team === gameFinalScore.team);
+    //         if(gameFinalScore.exists){
+    //             gameFinalScore.gameNumber = gameFinalScore.gameNumber + 1
+    //         } 
+    //         this.setState({exist: false})
+    //         axios.post( '/history.json', gameFinalScore) //?auth=' + token, gameData )
+    //         .then( response => {
+    //             //setErrors({gameName: 'Game ' + gameFinalScore.gameNumber + ' of ' + gameFinalScore.game + ' played on '+ gameFinalScore.scoresDate + ' was added.'})
+    //         } )
+    //         .catch( error => {
+    //             //setErrors({gameName: gameFinalScore.game + ' played on '+ gameFinalScore.scoresDate + ' was NOT added'})
+    //         } );
+    //     } )
+    //     .catch( error => {
+    //         //setErrors({gameName: gameFinalScore.game + ' error while checking if game exists'})
+    //         console.log( 'ERROR', error ) ;
+    //     } );
+    // }
+   
     addGameScoreHandler = ( event ) => {
-        event.preventDefault();
-        const formData = {};
-        for (let formElementIdentifier in this.state.newGameForm) {
-            formData[formElementIdentifier] = this.state.newGameForm[formElementIdentifier].value;
+        const gameFinalScore = {
+            user: localStorage.getItem('userId'),
+            scoresDate: moment().format('MM-DD-YYYY'),
+            game: this.state.game,
+            team: this.state.players,
+            scores: this.state.totals,
+            gameNumber: this.state.gameNumber,
         }
-        const newGame = {
-            user: this.props.user,
-            game: this.state.newGameForm.name.value,
-            hands: this.state.newGameForm.hands.value
-        }
-        
-        this.props.onAddGameResult(newGame, this.props.token);  
+
+        const message = saveGameTotals(gameFinalScore)
     }
+    
 
     addRowHandler = ( event ) => {
         event.preventDefault();
         let newHands = this.state.hands ;
         let newRowArray = this.state.row;
-        
         this.times (this.props.players.length) (c =>  { 
             let id = 'row' + (this.state.hands+1) + (c+1);
             newRowArray.push( {key: id, value: 0});
@@ -171,129 +236,45 @@ class ScoreCardRow extends Component {
             return console.log(item.value[0]) ;
             //item.value.key.contains('row'+this.state.hand) ? 
         })
-
-        console.log(newTotalsArray );
-        console.log(newRowArray );
-        console.log(this.props.players.length );
-        console.log(newRowArray.length - this.props.players.length, this.props.players.length );
-
         newRowArray.splice(newRowArray.length - this.props.players.length, this.props.players.length);
-
-        
-        console.log(newRowArray );
-        this.setState({hands: newHands - 1, row: newRowArray, totals: newTotalsArray });
-        console.log(this.state.hands);
-        
+        this.setState({hands: newHands - 1, row: newRowArray, totals: newTotalsArray });        
     }
 
     ////////////////////////////////////////////////////////
     render (props) {
-        
-        const count = this.props.players.length;
-
-        let gameHistory = [];
-        gameHistory.push(
-            <ScoreCardCell 
-                    key={'history'}
-                    id={'history'}
-                    type='text'
-                    defaultValue='History'
-                    />)
-        this.times (count) (i => {
-            let id = 'history'+(i+1); 
-            gameHistory.push(
-            <ScoreCardCell 
-                    key={id}
-                    id={id}
-                    type='text'
-                    defaultValue='0'
-                    />)
-        })
-
-       let totals = [];
-        totals.push(
-            <ScoreCardCell 
-                    key={'totals'}
-                    id={'totals'}
-                    type='text'
-                    defaultValue='Score'
-                    />)
-        this.times (count) (i => {
-            let id = 'totals'+(i+1); 
-            totals.push(
-            <ScoreCardCell 
-                    key={id}
-                    id={id}
-                    type='text'
-                    value={parseInt(this.state.totals[i].sum, 10)}
-                    changed={(event) => {}}/>)
-            })
-
-            let gamePlayers = [];
-            gamePlayers.push(
-            <ScoreCardCell 
-                    key={'player'}
-                    id={'player'}
-                    type='text'
-                    defaultValue='Player'
-                    changed={(event) => {}}/>)
-
-            const players = this.props.players;
-            //console.log(players);
-            players.map( player => (               
-                gamePlayers.push(
-                    <ScoreCardCell 
-                            key={player}
-                            id={player}
-                            type='text'
-                            defaultValue={player}
-                            />)));
-
-            let row = [];
-            this.times (this.state.hands) (r =>
-            {
-                let id = 'hand'+(r+1);
-                row.push(
-                    <ScoreCardCell 
-                            key={id}
-                            id={id}
-                            type='text'
-                            defaultValue={r+1}
-                            />)
-                
-                    this.times (count) (c =>  { 
-                        let id = 'row' + (r+1) + (c+1);
-                        row.push(
-                        <ScoreCardCell 
-                                key={id}
-                                id={id}
-                                column={c}
-                                type='number'
-                                value={this.state.row.find(x => x.key === id).value}//{this.state.value}
-                                changed={(event) => this.inputChangedHandler(event, id, (c+1), r)}
-                                />)
-                    })                         
-            });
-            
-                let frow = [];
-                let irowKey = 0;
-                while (row.length) {
-                    let irow = row.splice(0, this.props.players.length + 1)
-                    irowKey++;
-                    frow.push(<div key={'irow'+irowKey}>{irow}</div>);
-                }
-
         return (
-            
             <div className={classes.ScoreCard}>
-            {/* <form onSubmit={this.addGameScoreHandler}> */}
                 {this.state.redirect?<Redirect to="/home" />:null}
                 {this.props.registered ?
-                <div className={classes.ScoreCardRows}>{gameHistory}</div>
+                <div className={classes.ScoreCardRows}>
+                    <ScoreCardGameHistory
+                        count={this.state.count}
+                        times={this.times}>
+                    </ScoreCardGameHistory>
+                </div>
                 : null}
-                <div className={classes.ScoreCardRows}>{totals}</div>
-                <div className={classes.ScoreCardRows}>{gamePlayers}</div>
-                <div className={classes.ScoreCardRows}>{frow}</div>
+                <div className={classes.ScoreCardRows}>
+                    <ScoreCardTotals 
+                        count={this.state.count}
+                        totals={this.state.totals} 
+                        times={this.times}>
+                    </ScoreCardTotals>
+                </div>
+                <div className={classes.ScoreCardRows}>
+                    <ScoreCardPlayers 
+                        players={this.state.players}>
+                    </ScoreCardPlayers>
+                </div>
+                <div className={classes.ScoreCardRows}>
+                    <ScoreCardRows 
+                        hands={this.state.hands} 
+                        count={this.state.count} 
+                        row={this.state.row}
+                        players={this.state.players}
+                        inputChangedHandler={this.inputChangedHandler}
+                        times={this.times}>
+                    </ScoreCardRows>
+                </div>
                 <div className={classes.ScoreCardControls}>
                     <Button className={classes.Button} btnType='Action' clicked={this.addRowHandler}>ADD ROW</Button>
                     <Button btnType='Action' clicked={this.deleteRowHandler}>DELETE ROW</Button>
@@ -303,13 +284,9 @@ class ScoreCardRow extends Component {
                     {this.props.registered ? <Button btnType='Save'  clicked={this.addGameScoreHandler}>Save</Button> : null}
                     <Button btnType='Danger' clicked={this.quitHandler}>QUIT</Button>
                 </div>
-            {/* </form>
-            <Button btnType='Success' clicked={this.newGameHandler}>NEW GAME</Button> */}
             </div>
-        );
-        
+        )  
     }
-
 }
 
 const mapStateToProps = state => {

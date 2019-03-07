@@ -19,7 +19,7 @@ class Auth extends Component {
                     type: 'email',
                     placeholder: 'eMail Address'
                 },
-                value: '',
+                value: 'test2@test.com',
                 validation: {
                     required: true,
                     isEmail: true
@@ -33,7 +33,7 @@ class Auth extends Component {
                     type: 'password',
                     placeholder: 'Password'
                 },
-                value: '',
+                value: '123456',
                 validation: {
                     required: true,
                     minLength: 6
@@ -66,7 +66,7 @@ class Auth extends Component {
     }
 
     submitHandler = (event) => {
-        console.log('EVENT', event);
+        // console.log('EVENT', event);
         event.preventDefault();
         this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignup);
     }
@@ -76,20 +76,20 @@ class Auth extends Component {
     }
 
     handleClick = (e) => {
-        console.log(e.target);
-        const clickedButton = e.target;
-        console.log(typeof clickedButton);
-        console.log(clickedButton.toString());
+        // console.log(e.target);
+        // const clickedButton = e.target;
+        // console.log(typeof clickedButton);
+        // console.log(clickedButton.toString());
         
         //const isSignup = clickedButton.includes("REGISTER");
         //console.log(isSignup);
         this.setState({ clickedSubmit: e.target.id },() => {
-          console.log(this.state.clickedSubmit)
+        //   console.log(this.state.clickedSubmit)
         });
       }
 
     render () {
-        console.log(this.state.controls);
+        // console.log(this.state.controls);
         const formElementsArray = [];
         for (let key in this.state.controls) {
             formElementsArray.push({
@@ -116,7 +116,7 @@ class Auth extends Component {
         };
 
         let errorMessage = null;
-        console.log(this.props);
+        // console.log(this.props);
         if(this.props.error) {
             errorMessage = (
                 <p>{this.props.error}</p>

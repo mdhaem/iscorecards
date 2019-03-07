@@ -16,7 +16,7 @@ const gameOptions = () => {
     axios.get( '/games.json' + queryParams)
         .then( response => {
             Object.keys(response.data).map(i => gOptions.push(response.data[i]))
-
+console.log(response.data)
             return gOptions;
         } )
         .catch( error => {
