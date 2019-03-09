@@ -19,11 +19,8 @@ class RegisteredGame extends Component {
     }
 
     handleChange = (selectedOption, optionMeta) => {
-        // console.log(selectedOption, 'SELECTED OPTION')
-        // console.log(optionMeta.name, 'OPTION META NAME')
         switch(optionMeta.name){
             case "selectedGame":
-                // this.setState({ selectedGame: selectedOption.value })
                 if(checkValidity(selectedOption.value, {changed: true})){
                     this.setState(
                         {
@@ -32,12 +29,10 @@ class RegisteredGame extends Component {
                         }, () => {
                             const formIsValid = this.state.gameOptionTouched && this.state.teamOptionTouched
                             this.setState({ formIsValid })
-                            // console.log(this.state, 'UPDATED STATE')
                         })
                 }
                 break
             case "selectedTeam":
-                // console.log(selectedOption.value.toString())
                 if(checkValidity(selectedOption.value.toString(), {changed: true})){
                     this.setState(
                         {
@@ -46,26 +41,43 @@ class RegisteredGame extends Component {
                         }, () => {
                             const formIsValid = this.state.gameOptionTouched && this.state.teamOptionTouched
                             this.setState({ formIsValid })
-                            // console.log(this.state, 'UPDATED STATE')
                         })
                 }
                 break
             default:
                 console.log('ERROR - SELECTED OPTION OUT OF RANGE')
         }
-        // console.log(this.state, 'UPDATED STATE')
+    }
+
+    getFirstNames = (namesArray) => {
+        const firstNames = []
+        namesArray.map(item => {
+            return firstNames.push(item.split(' ')[0])
+        })
+
+        return firstNames
+    }
+
+    getFirstNamesFromTeamsProps = (propsArray) => {
+        let names = []
+        const teamFirstNames = []
+
+        propsArray.map((item) => {
+            names = []
+            item.team.map( team => {
+                return names.push(team.split(' ')[0])
+            })
+            teamFirstNames.push(names)
+        })
+
+        return teamFirstNames
     }
 
     registedGamePlayHandler = (event) => {
         event.preventDefault();
-        const firstNames = []
-        this.state.selectedTeam.map(item => {
-            return firstNames.push(item.split(' ')[0])
-        })
-        console.log(firstNames)
         const scoreCard = {
             game: this.state.selectedGame,
-            players: firstNames,
+            players: this.getFirstNames(this.state.selectedTeam),
             registered: this.props.registered
         }
         this.props.onNewScoreCard(scoreCard);
@@ -75,24 +87,23 @@ class RegisteredGame extends Component {
 
     componentDidMount(props) {
         this.props.onFetchGames(this.props.tokenId, this.props.userId) 
-        this.setState({games: this.props.games})
         this.props.onFetchTeams(this.props.tokenId, this.props.userId)
       }
 
     render() {
-        // console.log(this.props.games, 'PROPS GAMES')
-        // console.log(this.props.teams, 'PROPS TEAMS')
-        // console.log(this.state.selectedGame, 'STATE SELECTED GAME')
-        // console.log(this.state.selectedTeam, 'STATE SELECTED TEAM')
-        
         const gameOptions = []
         this.props.games.map((item, index) => {
             gameOptions.push({value: item.game, label: item.game})
             return gameOptions
         })
         const teamOptions = []
-        this.props.teams.map((item, index) => {
-            teamOptions.push({value: item.team, label: item.team})
+        let teamsFirstNames = []
+        
+        this.props.teams.length > 1 ?
+            teamsFirstNames = this.getFirstNamesFromTeamsProps(this.props.teams) : null
+
+        teamsFirstNames.map((item, index) => {
+            teamOptions.push({value: item, label: item.toString().replace(/,/g, ', ')})
             return teamOptions
         })
 
@@ -139,12 +150,10 @@ class RegisteredGame extends Component {
 const mapStateToProps = state => {
     return {
         game: state.scoreCard.game,
-        // player: state.scoreCard.players,
         registered: state.scoreCard.registered,
 
         games: state.games.games,
         teams: state.teams.teams,
-        // players: state.teams.plist,
         tokenId: state.auth.idToken,
         userId: state.auth.localId
     };

@@ -15,9 +15,9 @@ export const saveGameTotals = ( gameFinalScore ) => {
     //https://scorecards-482b8.firebaseio.com/history.json
     const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + gameFinalScore.user + '"';
     axios.get( '/history.json' + queryParams).then( response => {
-        console.log(response)
+        // console.log(response)
         const result = Object.keys(response.data).map(i => response.data[i])
-        console.log(result)
+        // console.log(result)
         //if game exists set exists to true
         const findResult = result.find(item => item.game === gameFinalScore.game 
             && item.scoresDate === gameFinalScore.scoresDate
@@ -53,8 +53,8 @@ const gameExists = (gameFinalScore, result) => {
 
     const exists = result.filter((item) => {
         for (var key in filter) {
-            console.log(item[key])
-            console.log(filter[key])
+            // console.log(item[key])
+            // console.log(filter[key])
             if (item[key] === undefined || item[key] !== filter[key]){
                 return false;
             }

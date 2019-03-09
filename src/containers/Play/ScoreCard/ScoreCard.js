@@ -8,11 +8,11 @@ import * as classes from './ScoreCard.css';
 
 class scoreCard extends Component {
     render (props) {
-       console.log(this.props.idToken === undefined && this.props.game === ''); // console.log(this.props.game);
-       console.log(localStorage.getItem('token'));
-       console.log(!!localStorage.getItem('token'));
-       console.log(this.props.game === ''); 
-       console.log(!this.props.game);
+    //    console.log(this.props.idToken === undefined && this.props.game === ''); // console.log(this.props.game);
+    //    console.log(localStorage.getItem('token'));
+    //    console.log(!!localStorage.getItem('token'));
+    //    console.log(this.props.game === ''); 
+    //    console.log(!this.props.game);
         return (
             <div className={classes.ScoreCard}>
                 <h1>{this.props.game}</h1>
