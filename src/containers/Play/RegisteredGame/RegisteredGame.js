@@ -73,6 +73,16 @@ class RegisteredGame extends Component {
         return teamFirstNames
     }
 
+    getUniqueGameNamesFromTeamProps = (propsArray) => {
+        const propGames = []
+
+        propsArray.map(item => {
+            return propGames.push(item.game)
+        })
+
+        return [...new Set(propGames)]
+    }
+
     registedGamePlayHandler = (event) => {
         event.preventDefault();
         const scoreCard = {
@@ -91,17 +101,21 @@ class RegisteredGame extends Component {
       }
 
     render() {
+        let uniqueGames = []
+        this.props.teams.length > 1 ?
+            uniqueGames = this.getUniqueGameNamesFromTeamProps(this.props.games) : null
+
         const gameOptions = []
-        this.props.games.map((item, index) => {
-            gameOptions.push({value: item.game, label: item.game})
+        uniqueGames.map((item) => {
+            gameOptions.push({value: item, label: item})
             return gameOptions
         })
-        const teamOptions = []
-        let teamsFirstNames = []
         
+        let teamsFirstNames = []
         this.props.teams.length > 1 ?
             teamsFirstNames = this.getFirstNamesFromTeamsProps(this.props.teams) : null
 
+        const teamOptions = []
         teamsFirstNames.map((item, index) => {
             teamOptions.push({value: item, label: item.toString().replace(/,/g, ', ')})
             return teamOptions
