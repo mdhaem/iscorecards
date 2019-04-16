@@ -4,6 +4,7 @@ import ScoreCardCell from '../ScoreCell/ScoreCardCell';
 
 
 const scoreCardRows = props => {
+    // console.log(props, 'SCORECARDROWS PROPS')
     let row = [];
     let count = props.count*1
     let hands = props.hands*1

@@ -19,12 +19,13 @@ class ScoreCardRow extends Component {
         game: this.props.game,
         totals: [],
         row: [],
-        hands: 2,
+        hands: this.props.hands,
         players: this.props.players,
         count: this.props.players.length,
         redirect: false,
         gameNumber: 1,
-        message: ''
+        message: '',
+        saved: false
     }
 
     updateState = () => {
@@ -85,8 +86,7 @@ class ScoreCardRow extends Component {
             item.value = [];
             return updatedTotals;
         });
-        this.setState({totals: updatedTotals});
-        // console.log(updatedTotals);
+        this.setState({totals: updatedTotals, saved: false, message: ''});
     }
 
     quitHandler = () => {
@@ -114,22 +114,31 @@ class ScoreCardRow extends Component {
     }
         
     
-    componentWillMount() {
+    componentDidMount() {
         //populate state totals with {key:name sum:0} for each player
-        const updateTotals = this.updateState();
-        this.setState({totals: updateTotals});
+        // const updateTotals = this.updateState();
+        // this.setState({totals: updateTotals});
 
         //populate state row with {key:}
-        const rows = this.rowArray(this.props.players.length);
-        // console.log(rows);
-        let newRows = this.state.row;
-        newRows = rows;
-        this.setState({row: newRows});
-        // console.log(this.state.row);
+    //     const rows = this.rowArray(this.state.count);
+    // console.log(rows);
+    //     let newRows = this.state.row;
+    //     newRows = rows;
+    //     this.setState({row: rows});
+    // console.log(this.state.row);
+
+        if(this.props.hands){ this.setState({hands: parseInt(this.props.hands)}, () => {
+            // console.log(this.state.hands)
+            const updateTotals = this.updateState();
+            this.setState({totals: updateTotals});
+
+            const rows = this.rowArray(this.state.count);
+            // console.log(rows);
+            this.setState({row: rows});
+        })}
     };
 
-    rowArray() {
-        const count = this.props.players.length;
+    rowArray(count) {
         let rowArray = [];
         this.times (this.state.hands) (r =>
         {
@@ -145,62 +154,6 @@ class ScoreCardRow extends Component {
     handleFocus = (event) => {
         event.target.select();
     }
-
-    // addGameScoreHandler = ( event ) => {
-    //     const gameFinalScore = {
-    //         user: localStorage.getItem('userId'),
-    //         scoresDate: moment().format('MM-DD-YYYY'),
-    //         game: this.state.game,
-    //         team: this.state.players,
-    //         scores: this.state.totals,
-    //         gameNumber: this.state.gameNumber,
-    //     }
-    //     const filter = {
-    //         game: gameFinalScore.game,
-    //         scoresDate: gameFinalScore.scoresDate,
-    //         team: gameFinalScore.team
-    //       };
-    //     //get all games for user
-    //     //https://scorecards-482b8.firebaseio.com/history.json
-    //     const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + gameFinalScore.user + '"';
-    //     axios.get( '/history.json' + queryParams).then( response => {
-    //         console.log(response)
-    //         const result = Object.keys(response.data).map(i => response.data[i])
-    //         console.log(result)
-    //         //if game exists set exists to true
-    //         const findResult = result.find(item => item.game === gameFinalScore.game 
-    //             && item.scoresDate === gameFinalScore.scoresDate
-    //             && item.team === gameFinalScore.team)
-
-    //         const exists = result.filter((item) => {
-    //             for (var key in filter) {
-    //               if (item[key] === undefined || item[key] != filter[key]){
-    //                     return false;
-    //                 }
-    //             }
-    //             return true;
-    //           });
-
-    //         // this.state.exists = result.find(item => item.game === gameFinalScore.game 
-    //         //     && item.scoresDate === gameFinalScore.scoresDate
-    //         //     && item.team === gameFinalScore.team);
-    //         if(gameFinalScore.exists){
-    //             gameFinalScore.gameNumber = gameFinalScore.gameNumber + 1
-    //         } 
-    //         this.setState({exist: false})
-    //         axios.post( '/history.json', gameFinalScore) //?auth=' + token, gameData )
-    //         .then( response => {
-    //             //setErrors({gameName: 'Game ' + gameFinalScore.gameNumber + ' of ' + gameFinalScore.game + ' played on '+ gameFinalScore.scoresDate + ' was added.'})
-    //         } )
-    //         .catch( error => {
-    //             //setErrors({gameName: gameFinalScore.game + ' played on '+ gameFinalScore.scoresDate + ' was NOT added'})
-    //         } );
-    //     } )
-    //     .catch( error => {
-    //         //setErrors({gameName: gameFinalScore.game + ' error while checking if game exists'})
-    //         console.log( 'ERROR', error ) ;
-    //     } );
-    // }
    
     addGameScoreHandler = ( event ) => {
         const gameFinalScore = {
@@ -211,8 +164,11 @@ class ScoreCardRow extends Component {
             scores: this.state.totals,
             gameNumber: this.state.gameNumber,
         }
-
-        const message = saveGameTotals(gameFinalScore)
+        this.setState({saved: true})        
+        saveGameTotals(gameFinalScore).then( resp => {
+            this.setState({message: resp})
+            console.log(resp, "RESPONSE")
+        })
     }
     
 
@@ -225,6 +181,7 @@ class ScoreCardRow extends Component {
             newRowArray.push( {key: id, value: 0});
         })
         this.setState({row: newRowArray, hands: newHands + 1 });
+        
     }
 
     deleteRowHandler = ( event ) => {
@@ -232,10 +189,10 @@ class ScoreCardRow extends Component {
         let newHands = this.state.hands ;
         let newRowArray = this.state.row;
         const newTotalsArray = this.state.totals;
-        newTotalsArray.map(item => {
-            return console.log(item.value[0]) ;
-            //item.value.key.contains('row'+this.state.hand) ? 
-        })
+        // newTotalsArray.map(item => {
+        //     return console.log(item.value[0]) ;
+        //     //item.value.key.contains('row'+this.state.hand) ? 
+        // })
         newRowArray.splice(newRowArray.length - this.props.players.length, this.props.players.length);
         this.setState({hands: newHands - 1, row: newRowArray, totals: newTotalsArray });        
     }
@@ -243,6 +200,8 @@ class ScoreCardRow extends Component {
     ////////////////////////////////////////////////////////
     render (props) {
         return (
+            <React.Fragment>
+            {this.state.message ? <p>{this.state.message}</p> : null}
             <div className={classes.ScoreCard}>
                 {this.state.redirect?<Redirect to="/home" />:null}
                 {this.props.registered ?
@@ -253,6 +212,7 @@ class ScoreCardRow extends Component {
                     </ScoreCardGameHistory>
                 </div>
                 : null}
+                {this.state.totals.length ?
                 <div className={classes.ScoreCardRows}>
                     <ScoreCardTotals 
                         count={this.state.count}
@@ -260,11 +220,13 @@ class ScoreCardRow extends Component {
                         times={this.times}>
                     </ScoreCardTotals>
                 </div>
+                : null}
                 <div className={classes.ScoreCardRows}>
                     <ScoreCardPlayers 
                         players={this.state.players}>
                     </ScoreCardPlayers>
                 </div>
+                {this.state.totals.length ?
                 <div className={classes.ScoreCardRows}>
                     <ScoreCardRows 
                         hands={this.state.hands} 
@@ -275,16 +237,18 @@ class ScoreCardRow extends Component {
                         times={this.times}>
                     </ScoreCardRows>
                 </div>
+                : null}
                 <div className={classes.ScoreCardControls}>
                     <Button className={classes.Button} btnType='Action' clicked={this.addRowHandler}>ADD ROW</Button>
                     <Button btnType='Action' clicked={this.deleteRowHandler}>DELETE ROW</Button>
                 </div>
                 <div className={classes.ScoreCardControls}>
                     <Button btnType='Success' clicked={this.newGameHandler}>NEW GAME</Button>
-                    {this.props.registered ? <Button btnType='Save'  clicked={this.addGameScoreHandler}>Save</Button> : null}
+                    {this.props.registered ? <Button btnType='Save' disabled={this.state.saved} clicked={this.addGameScoreHandler}>Save</Button> : null}
                     <Button btnType='Danger' clicked={this.quitHandler}>QUIT</Button>
                 </div>
             </div>
+            </React.Fragment>
         )  
     }
 }
@@ -293,6 +257,7 @@ const mapStateToProps = state => {
     return {
             players: state.scoreCard.players,
             game: state.scoreCard.game,
+            hands: state.scoreCard.hands,
             registered: state.scoreCard.registered,
             token: state.auth.idToken,
     };

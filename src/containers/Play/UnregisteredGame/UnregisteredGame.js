@@ -43,6 +43,21 @@ class UnregisteredGame extends Component {
                 errorMessage: 'Two or more player names seperated by a space is required.',
                 touched:false,
             },
+            hands: {
+                elementType: 'number',
+                elementConfig: {
+                    type: 'number',
+                    placeholder: '...enter number of hands\'s'
+                },
+                value: [],
+                validation: {
+                    required: true,
+                    isNumeric: true,
+                },
+                valid: false,
+                errorMessage: '',
+                touched:false,
+            },
         },
         formIsValid: false,
         redirect: false
@@ -50,7 +65,7 @@ class UnregisteredGame extends Component {
 
     inputChangedHandler = (event, inputIdentifier) => {
         //alert('inputChangeHandler called');
-        console.log(event.target.value, inputIdentifier);
+        // console.log(event.target.value, inputIdentifier);
         const updatedSelectGameForm = {
             ...this.state.unregisteredGameForm
         };
@@ -59,15 +74,15 @@ class UnregisteredGame extends Component {
         };
         updatedFormElement.value = event.target.value;
 
-        console.log(updatedFormElement.value);
-        console.log(updatedFormElement.validation);
+        // console.log(updatedFormElement.value);
+        // console.log(updatedFormElement.validation);
         updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
         updatedFormElement.touched = true
-        console.log(updatedFormElement.valid);
+        // console.log(updatedFormElement.valid);
         updatedSelectGameForm[inputIdentifier] = updatedFormElement;
         
         let formIsValid = true;
-        console.log(updatedSelectGameForm[inputIdentifier])
+        // console.log(updatedSelectGameForm[inputIdentifier])
 
         //updatedSelectGameForm[inputIdentifier].config.valid ? updatedSelectGameForm[inputIdentifier].config.errorMessage =  
 
@@ -77,7 +92,7 @@ class UnregisteredGame extends Component {
 
 
         //const formIsValid = updatedSelectGameForm['gameName'].valid && updatedSelectGameForm['players'].valid;
-        console.log(formIsValid);
+        // console.log(formIsValid);
         this.setState({unregisteredGameForm: updatedSelectGameForm, formIsValid: formIsValid});
         //console.log(this.state);
     }
@@ -88,9 +103,10 @@ class UnregisteredGame extends Component {
         const scoreCard = {
             game: this.state.unregisteredGameForm.gameName.value,
             players: playersArray,
+            hands: this.state.unregisteredGameForm.hands.value,
             registered: false
         }
-        //console.log(scoreCard);
+        // console.log(scoreCard);
         this.props.onNewScoreCard(scoreCard);
         this.setState(this.state); 
         this.setState({redirect: true}); 
@@ -109,21 +125,24 @@ class UnregisteredGame extends Component {
                 config: this.state.unregisteredGameForm[key]
             });
         }
-        console.log(formElementsArray)
+        // console.log(formElementsArray)
         let form = (
             <form onSubmit={this.unregistedGamePlayHandler}>
                 {formElementsArray.map(formElement => (
                     <div key={formElement.id}>
                         <Input 
-                        //key={formElement.id}
-                        elementType={formElement.config.elementType}
-                        elementConfig={formElement.config.elementConfig}
-                        value={formElement.config.value}
-                        invalid={!formElement.config.valid}
-                        shouldValidate={formElement.config.validation}
-                        touched={formElement.config.touched}
-                        changed={(event) => this.inputChangedHandler(event, formElement.id)} />
-                        <p style={errorMessageStyle}>{!formElement.config.touched || (formElement.config.valid && formElement.config.touched) ? null : formElement.config.errorMessage}</p>
+                            //key={formElement.id}
+                            elementType={formElement.config.elementType}
+                            elementConfig={formElement.config.elementConfig}
+                            value={formElement.config.value}
+                            invalid={!formElement.config.valid}
+                            shouldValidate={formElement.config.validation}
+                            touched={formElement.config.touched}
+                            changed={(event) => this.inputChangedHandler(event, formElement.id)} 
+                        />
+                    {!formElement.config.touched || 
+                    (formElement.config.valid && formElement.config.touched) 
+                    ? null : formElement.config.errorMessage}
                     </div>
                 ))}
                 {/* <Button btnType="Danger">CANCEL</Button> */}

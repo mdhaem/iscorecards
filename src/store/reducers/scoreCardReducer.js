@@ -11,13 +11,14 @@ const initialState = {
 
 const newScoreCard = ( state, action ) => {
     // console.log(state);
-     console.log(action.CardData.game, action.CardData.players, action);
+    //  console.log(action.CardData.game, action.CardData.players, action);
     const returnValue = updateObject( state, {
         game: action.CardData.game,
         players: action.CardData.players,
+        hands: action.CardData.hands,
         registered: action.CardData.registered,
     } );
-    //console.log(returnValue)
+    // console.log(returnValue)
     return returnValue;
 };
 

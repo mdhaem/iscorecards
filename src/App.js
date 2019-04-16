@@ -10,7 +10,7 @@ import NewTeam from './containers/Admin/NewTeam/NewTeam';
 import NewPlayer from './containers/Admin/NewPlayer/NewPlayerForm';
 import UnregisteredGame from './containers/Play/UnregisteredGame/UnregisteredGame';
 import ScoreCard from './containers/Play/ScoreCard/ScoreCard';
-import ImportGameHistory from './containers/Admin/ImportGameHistory/ImportGameHistoryFormik';
+import ImportGameHistory from './containers/Admin/ImportGameHistory/ImportGameHistory';
 import UpdateGameHistory from './containers/Admin/UpdateGameHistory/UpdateGameHistory'
 import Logout from './containers/Auth/Logout/Logout';
 import Home from './components/Home/Home';

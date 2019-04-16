@@ -6,6 +6,40 @@ export const updateObject = (oldObject, updatedProperties) => {
     };
 };
 
+export const getFirstNamesFromTeamsProps = (propsArray) => {
+    let names = []
+    const teamFirstNames = []
+
+    propsArray.map((item) => {
+        names = []
+        item.team.map( team => {
+            return names.push(team.split(' ')[0])
+        })
+        return teamFirstNames.push(names)
+    })
+
+    return teamFirstNames
+}
+
+export const getUniqueGameNamesFromTeamProps = (propsArray) => {
+    const propGames = []
+
+    propsArray.map(item => {
+        return propGames.push(item.game)
+    })
+
+    return [...new Set(propGames)]
+}
+
+export const getUniqueArray = (propsArray) => {
+    const uniqueArray = propsArray.filter((thing,index) => {
+        return index === propsArray.findIndex(obj => {
+          return JSON.stringify(obj) === JSON.stringify(thing);
+        })
+      })
+    return uniqueArray
+}
+
 export const checkValidity = (value, rules) => {
     // console.log(typeof value, value.length, rules)
     let isValid = true;
@@ -55,3 +89,12 @@ export const checkValidity = (value, rules) => {
     // console.log(isValid)
     return isValid;
 }
+
+export const times = n => f => {
+    let iter = i => {
+      if (i === n) return
+      f (i)
+      iter (i + 1)
+    }
+    return iter (0)
+  }

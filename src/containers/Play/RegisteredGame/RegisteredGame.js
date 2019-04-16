@@ -2,12 +2,13 @@ import React, {Component} from  'react';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
 import Select from 'react-select'
+import _ from 'lodash'
 
 import classes from './SelectGame.css';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
-import { checkValidity} from '../../../Shared/utility';
+import { checkValidity, getUniqueGameNamesFromTeamProps, getFirstNamesFromTeamsProps, getUniqueArray } from '../../../Shared/utility';
 
 class RegisteredGame extends Component {
     state = {
@@ -18,7 +19,21 @@ class RegisteredGame extends Component {
         teamOptionTouched: false
     }
 
+    getHandsFromSelectedGame = (selectedGame) => {
+        console.log(selectedGame)
+        console.log(this.props.games)
+        console.log(this.props.games.find(x => x.b === selectedGame.game))
+        const gamesUnique = getUniqueArray(this.props.games)
+        console.log(gamesUnique)
+        // console.log(gamesUnique.find(x => x.game === selectedGame.game).hands)
+        console.log(_.find(gamesUnique, function(o) { return o.game === selectedGame }))
+        return _.find(gamesUnique, function(o) { return o.game === selectedGame }).hands
+        // _.find(gamesUnique, function(o) { return o.game === selectedGame; });
+    }
+
     handleChange = (selectedOption, optionMeta) => {
+        console.log(selectedOption)
+        console.log(optionMeta)
         switch(optionMeta.name){
             case "selectedGame":
                 if(checkValidity(selectedOption.value, {changed: true})){
@@ -49,47 +64,15 @@ class RegisteredGame extends Component {
         }
     }
 
-    getFirstNames = (namesArray) => {
-        const firstNames = []
-        namesArray.map(item => {
-            return firstNames.push(item.split(' ')[0])
-        })
-
-        return firstNames
-    }
-
-    getFirstNamesFromTeamsProps = (propsArray) => {
-        let names = []
-        const teamFirstNames = []
-
-        propsArray.map((item) => {
-            names = []
-            item.team.map( team => {
-                return names.push(team.split(' ')[0])
-            })
-            teamFirstNames.push(names)
-        })
-
-        return teamFirstNames
-    }
-
-    getUniqueGameNamesFromTeamProps = (propsArray) => {
-        const propGames = []
-
-        propsArray.map(item => {
-            return propGames.push(item.game)
-        })
-
-        return [...new Set(propGames)]
-    }
-
     registedGamePlayHandler = (event) => {
         event.preventDefault();
         const scoreCard = {
             game: this.state.selectedGame,
-            players: this.getFirstNames(this.state.selectedTeam),
+            players: this.state.selectedTeam,
+            hands: this.getHandsFromSelectedGame(this.state.selectedGame),
             registered: this.props.registered
         }
+        console.log(scoreCard)
         this.props.onNewScoreCard(scoreCard);
         this.setState(this.state); 
         this.setState({redirect: true}); 
@@ -103,7 +86,7 @@ class RegisteredGame extends Component {
     render() {
         let uniqueGames = []
         this.props.teams.length > 1 ?
-            uniqueGames = this.getUniqueGameNamesFromTeamProps(this.props.games) : null
+            uniqueGames = getUniqueGameNamesFromTeamProps(this.props.games) : uniqueGames = []
 
         const gameOptions = []
         uniqueGames.map((item) => {
@@ -113,7 +96,7 @@ class RegisteredGame extends Component {
         
         let teamsFirstNames = []
         this.props.teams.length > 1 ?
-            teamsFirstNames = this.getFirstNamesFromTeamsProps(this.props.teams) : null
+            teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []
 
         const teamOptions = []
         teamsFirstNames.map((item, index) => {
@@ -121,10 +104,43 @@ class RegisteredGame extends Component {
             return teamOptions
         })
 
+        const customStyles = {
+            option: (provided, state) => ({
+                ...provided,
+            //   borderBottom: '1px dotted pink',
+            //   color: state.isSelected ? 'red' : 'blue',
+                width: 400,
+                padding: 0,
+            }),
+            control: (provided, state) => ({
+                ...provided,
+                width: 100,
+                padding: 0,
+                
+                width: 400,
+                align: 'center',
+                margin: 'auto',
+                marginBottom: 10,
+                // marginbottom: 10,
+    // textalign: 'center',
+    // boxshadow: "0 2px 3px #ccc",
+    // border: '1px solid #eee',
+    // padding: 10,
+    // boxsizing: 'border-box'
+            }),
+            singleValue: (provided, state) => {
+            //   const opacity = state.isDisabled ? 0.5 : 1;
+            //   const transition = 'opacity 300ms';
+          
+              return { ...provided };
+            }
+          }
+
         let form = (
             <form onSubmit={this.registedGamePlayHandler}> 
             <div>
                 <Select
+                    styles={customStyles}
                     name="selectedGame"
                     placeholder="...select a game"
                     value={this.selectedOption}
@@ -134,6 +150,7 @@ class RegisteredGame extends Component {
             </div>
             <div>
                 <Select
+                    styles={customStyles}
                     name="selectedTeam"
                     placeholder="...select a team"
                     value={this.selectedOption}
