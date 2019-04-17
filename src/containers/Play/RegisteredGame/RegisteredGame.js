@@ -20,20 +20,19 @@ class RegisteredGame extends Component {
     }
 
     getHandsFromSelectedGame = (selectedGame) => {
-        console.log(selectedGame)
-        console.log(this.props.games)
-        console.log(this.props.games.find(x => x.b === selectedGame.game))
+        // console.log(selectedGame)
+        // console.log(this.props.games)
+        // console.log(this.props.games.find(x => x.b === selectedGame.game))
         const gamesUnique = getUniqueArray(this.props.games)
-        console.log(gamesUnique)
+        // console.log(gamesUnique)
         // console.log(gamesUnique.find(x => x.game === selectedGame.game).hands)
-        console.log(_.find(gamesUnique, function(o) { return o.game === selectedGame }))
+        // console.log(_.find(gamesUnique, function(o) { return o.game === selectedGame }))
         return _.find(gamesUnique, function(o) { return o.game === selectedGame }).hands
-        // _.find(gamesUnique, function(o) { return o.game === selectedGame; });
     }
 
     handleChange = (selectedOption, optionMeta) => {
-        console.log(selectedOption)
-        console.log(optionMeta)
+        // console.log(selectedOption)
+        // console.log(optionMeta)
         switch(optionMeta.name){
             case "selectedGame":
                 if(checkValidity(selectedOption.value, {changed: true})){
@@ -79,8 +78,14 @@ class RegisteredGame extends Component {
     }
 
     componentDidMount(props) {
+        console.log(localStorage.getItem("token"))
+        console.log(this.props.tokenId)
+        console.log(localStorage.getItem("userId"))
+        console.log(this.props.userId)
+        // this.props.onFetchGames(localStorage.getItem("tokenId"), localStorage.getItem("userId")) 
         this.props.onFetchGames(this.props.tokenId, this.props.userId) 
         this.props.onFetchTeams(this.props.tokenId, this.props.userId)
+        
       }
 
     render() {
@@ -93,6 +98,9 @@ class RegisteredGame extends Component {
             gameOptions.push({value: item, label: item})
             return gameOptions
         })
+
+        let noGameOptions = false
+        // gameOptions.length === 0 ? noGameOptions = true : null
         
         let teamsFirstNames = []
         this.props.teams.length > 1 ?
@@ -107,31 +115,19 @@ class RegisteredGame extends Component {
         const customStyles = {
             option: (provided, state) => ({
                 ...provided,
-            //   borderBottom: '1px dotted pink',
-            //   color: state.isSelected ? 'red' : 'blue',
                 width: 400,
                 padding: 0,
             }),
             control: (provided, state) => ({
                 ...provided,
-                width: 100,
                 padding: 0,
                 
                 width: 400,
                 align: 'center',
                 margin: 'auto',
                 marginBottom: 10,
-                // marginbottom: 10,
-    // textalign: 'center',
-    // boxshadow: "0 2px 3px #ccc",
-    // border: '1px solid #eee',
-    // padding: 10,
-    // boxsizing: 'border-box'
             }),
             singleValue: (provided, state) => {
-            //   const opacity = state.isDisabled ? 0.5 : 1;
-            //   const transition = 'opacity 300ms';
-          
               return { ...provided };
             }
           }
@@ -172,6 +168,7 @@ class RegisteredGame extends Component {
                 <p className={classes.Instructions}>Select game then team.</p>
                 <p>{this.state.selectedGame} {this.state.selectedTeam}</p>
                 {this.state.redirect?<Redirect to="/scorecard" />:null}
+                {noGameOptions?<Redirect to="/newgame"/>:null}
                 {form}
             </div>
         );
