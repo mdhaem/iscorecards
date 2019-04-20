@@ -8,8 +8,8 @@ const initialState = {
 
 const fetchTeams = (state, action) => {
     // console.log('STATE: ', state);
-    // console.log('ACTION.TEAMS: ', action.teams);
-    
+    console.log('ACTION.TEAMS: ', action.teams);
+    action.teams.length === 0 ? action.teams = null : null
     return updateObject( state, {
         teams: action.teams,
         error: false

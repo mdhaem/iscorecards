@@ -1,7 +1,7 @@
 import React, {Component} from  'react';
 import {connect} from 'react-redux';
 import { reset } from 'redux-form';
-//import { UncontrolledAlert } from 'reactstrap';
+import {Redirect} from 'react-router-dom';
 import axios from '../../../store/axios-data';
 
 import classes from './NewTeam.css';
@@ -15,7 +15,8 @@ class SelectGame extends Component {
         team: [],
         formIsValid: false,
         options: [{value: "selectplayer", displayValue: "...select player"}],
-        teamAdded: null
+        teamAdded: null,
+        returnToPlay: false
     }
     
     addTeamHandler = (event) => {
@@ -28,6 +29,7 @@ class SelectGame extends Component {
         this.setState({teamAdded: this.state.team});
         const emptyTeamList = [];
         this.setState({team: emptyTeamList, formIsValid: false});
+        typeof this.props.location.state != 'undefined' ? this.setState({returnToPlay: true}, () => {console.log(this.state.returnToPlay)}):null
         this.setState({ state: this.state });
     }
 
@@ -69,7 +71,8 @@ class SelectGame extends Component {
     render() {
         
         let form;
-        if ( this.props.teamAdded ) {
+        console.log(this.state.returnToPlay)
+        if ( this.props.teamAdded.length > 0) {
             let teamName = '';
             this.state.teamAdded.map((name) => {
                 let words = name.split(' ');
@@ -84,11 +87,18 @@ class SelectGame extends Component {
             form = <p>Team "{teamName}" sucessfully added.</p>;
         }
 
+        let newTeamInstructions = 'To create a new team, select two or more members from the players list.';
+        typeof this.props.location.state != 'undefined'? 
+            newTeamInstructions = 'Please create a team to continue.' : null
+            
         return (
             
-            <div className={classes.NewTeam}>
+        <div className={classes.NewTeam}>
+            {/* {this.state.returnToPlay ? <Redirect to="/rplay"/> : null} */}
+            {this.state.returnToPlay?this.props.history.push('/rplay'):null}
+
                 <h1>New Team</h1>
-                <p className={classes.Instructions}>To create a new team, select two or more members from the players list.</p>
+            <p className={classes.Instructions}>{newTeamInstructions}</p>
                 {form}
                 <FormCode 
                     options={this.state.options}
@@ -104,10 +114,11 @@ class SelectGame extends Component {
                             return (<li key={index}>{name}</li>);})
                     }
                 </ol>
+                {this.state.returnToPlay ? <Redirect to="/rplay"/> : null}
                 <Button btnType="Success" clicked={this.addTeamHandler} disabled={!this.state.formIsValid}>SAVE</Button>
                 <Button btnType="Danger" clicked={this.handleCancel}>CANCEL</Button>
                 </form>
-            </div>
+        </div>
         );
     }
 }

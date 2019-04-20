@@ -37,7 +37,7 @@ class App extends Component {
     );
 
     if(this.props.isAuthenticated) {
-      //alert(this.props.isAuthenticated);
+      // alert(this.props.isAuthenticated);
       routes = (
         <Switch>
             <Route path="/importhistory" component={ImportGameHistory} />

@@ -2,7 +2,7 @@ import * as actionTypes from './actionTypes';
 import axios from '../axios-data';
 
 export const fetchGames = ( games ) => {
-    // console.log('FETCH_GAMES: ',games)
+    console.log('FETCH_GAMES: ',games)
     return {
         type: actionTypes.FETCH_GAMES,
         games

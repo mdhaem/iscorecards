@@ -78,19 +78,19 @@ class RegisteredGame extends Component {
     }
 
     componentDidMount(props) {
-        console.log(localStorage.getItem("token"))
-        console.log(this.props.tokenId)
-        console.log(localStorage.getItem("userId"))
-        console.log(this.props.userId)
+        // console.log(localStorage.getItem("token"))
+        // console.log(this.props.tokenId)
+        // console.log(localStorage.getItem("userId"))
+        // console.log(this.props.userId)
         // this.props.onFetchGames(localStorage.getItem("tokenId"), localStorage.getItem("userId")) 
         this.props.onFetchGames(this.props.tokenId, this.props.userId) 
         this.props.onFetchTeams(this.props.tokenId, this.props.userId)
-        
+        console.log(this.props.games)
       }
 
     render() {
         let uniqueGames = []
-        this.props.teams.length > 1 ?
+        this.props.games.length > 0 ?
             uniqueGames = getUniqueGameNamesFromTeamProps(this.props.games) : uniqueGames = []
 
         const gameOptions = []
@@ -98,13 +98,13 @@ class RegisteredGame extends Component {
             gameOptions.push({value: item, label: item})
             return gameOptions
         })
-
-        let noGameOptions = false
-        // gameOptions.length === 0 ? noGameOptions = true : null
         
         let teamsFirstNames = []
-        this.props.teams.length > 1 ?
+        this.props.teams !== null && this.props.teams.length > 0 ?
             teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []
+
+        let noTeamOptions = false
+        this.props.teams === null ? noTeamOptions = true : null
 
         const teamOptions = []
         teamsFirstNames.map((item, index) => {
@@ -168,7 +168,7 @@ class RegisteredGame extends Component {
                 <p className={classes.Instructions}>Select game then team.</p>
                 <p>{this.state.selectedGame} {this.state.selectedTeam}</p>
                 {this.state.redirect?<Redirect to="/scorecard" />:null}
-                {noGameOptions?<Redirect to="/newgame"/>:null}
+                {noTeamOptions?<Redirect to={{pathname: '/newTeam', state: {rplayRedirect: true}}}/>:null}
                 {form}
             </div>
         );
