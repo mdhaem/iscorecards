@@ -16,7 +16,9 @@ class RegisteredGame extends Component {
         selectedGame: '',
         selectedTeam: '',
         gameOptionTouched: false,
-        teamOptionTouched: false
+        teamOptionTouched: false,
+        noTeamOptions: false,
+        noGameOptions: false  
     }
 
     getHandsFromSelectedGame = (selectedGame) => {
@@ -85,32 +87,59 @@ class RegisteredGame extends Component {
         // this.props.onFetchGames(localStorage.getItem("tokenId"), localStorage.getItem("userId")) 
         this.props.onFetchGames(this.props.tokenId, this.props.userId) 
         this.props.onFetchTeams(this.props.tokenId, this.props.userId)
-        console.log(this.props.games)
+      }
+
+      optionsAvailable= (options, referrer, optionType) => {
+        let noOptions = false
+        options === null && noOptions === false ? noOptions = true : noOptions = false
+
+        typeof referrer !=='undefined' ? console.log(Object.keys(referrer)[0]):null
+        typeof referrer !=='undefined' ? console.log(Object.values(referrer)[0]):null
+        
+        typeof referrer !=='undefined' &&
+        Object.values(referrer)[0] &&
+        Object.keys(referrer)[0] === 'returnGameToPlay' &&
+        options === null  ? this.props.onFetchGames(this.props.tokenId, this.props.userId) : null
+
+        typeof referrer !=='undefined' &&
+        Object.values(referrer)[0] &&
+        Object.keys(referrer)[0] === 'returnTeamToPlay' &&
+        options === null  ? this.props.onFetchTeams(this.props.tokenId, this.props.userId) : null
+
+        typeof referrer !== 'undefined' && 
+        Object.values(referrer)[0] &&
+        Object.keys(referrer)[0] === optionType ? noOptions = false : null
+
+        return noOptions
       }
 
     render() {
-        let uniqueGames = []
-        this.props.games.length > 0 ?
-            uniqueGames = getUniqueGameNamesFromTeamProps(this.props.games) : uniqueGames = []
+        let noGameOptions = this.optionsAvailable(this.props.games, this.props.location.state, 'returnGameToPlay')
+        let noTeamOptions = this.optionsAvailable(this.props.teams, this.props.location.state, 'returnTeamToPlay')
 
         const gameOptions = []
-        uniqueGames.map((item) => {
-            gameOptions.push({value: item, label: item})
-            return gameOptions
-        })
-        
-        let teamsFirstNames = []
-        this.props.teams !== null && this.props.teams.length > 0 ?
-            teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []
+        if (!noGameOptions) {
+            let uniqueGames = []
+            this.props.games !== null && this.props.games.length > 0 ?
+                uniqueGames = getUniqueGameNamesFromTeamProps(this.props.games) : uniqueGames = []
 
-        let noTeamOptions = false
-        this.props.teams === null ? noTeamOptions = true : null
+            uniqueGames.map((item) => {
+                gameOptions.push({value: item, label: item})
+                return gameOptions
+            })
+        }
 
         const teamOptions = []
-        teamsFirstNames.map((item, index) => {
-            teamOptions.push({value: item, label: item.toString().replace(/,/g, ', ')})
-            return teamOptions
-        })
+        if (!noTeamOptions) {
+            let teamsFirstNames = []
+            this.props.teams !== null && this.props.teams.length > 0 ?
+                teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []
+
+            teamsFirstNames.map((item, index) => {
+                teamOptions.push({value: item, label: item.toString().replace(/,/g, ', ')})
+                return teamOptions
+            })
+        }
 
         const customStyles = {
             option: (provided, state) => ({
@@ -142,6 +171,7 @@ class RegisteredGame extends Component {
                     value={this.selectedOption}
                     onChange={this.handleChange}
                     options={gameOptions}
+                    // onFocus={this.handleOnFocus}
                 />
             </div>
             <div>
@@ -152,6 +182,7 @@ class RegisteredGame extends Component {
                     value={this.selectedOption}
                     onChange={this.handleChange}
                     options={teamOptions}
+                    // onFocus={this.handleOnFocus}
                 />
             </div>
                 <Button btnType="Danger">CANCEL</Button>
@@ -168,7 +199,8 @@ class RegisteredGame extends Component {
                 <p className={classes.Instructions}>Select game then team.</p>
                 <p>{this.state.selectedGame} {this.state.selectedTeam}</p>
                 {this.state.redirect?<Redirect to="/scorecard" />:null}
-                {noTeamOptions?<Redirect to={{pathname: '/newTeam', state: {rplayRedirect: true}}}/>:null}
+                {noTeamOptions?<Redirect to='/newTeam' />:null}
+                {noGameOptions?<Redirect to='/newGame' />:null}
                 {form}
             </div>
         );
@@ -183,7 +215,8 @@ const mapStateToProps = state => {
         games: state.games.games,
         teams: state.teams.teams,
         tokenId: state.auth.idToken,
-        userId: state.auth.localId
+        userId: state.auth.localId,
+        noTeamOptions: state.teams.noTeamOptions
     };
 };
 

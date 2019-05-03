@@ -1,5 +1,6 @@
 import React, {Component} from  'react';
 import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 
 import classes from './NewGame.css';
 import Input from '../../../components/UI/Input/Input';
@@ -36,7 +37,8 @@ class NewGame extends Component {
                 valid: true
             }
         },
-        formIsValid: false
+        formIsValid: false,
+        returnGameToPlay: false
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
@@ -85,7 +87,7 @@ class NewGame extends Component {
         }
         
         this.props.onAddGame(newGame, this.props.token);
-        
+        this.setState({returnGameToPlay: true})
     }
 
     render() {
@@ -120,6 +122,11 @@ class NewGame extends Component {
 
         return (
             <div className={classes.NewGame}>
+            {this.state.returnGameToPlay?<Redirect to={{
+                                                pathname: "/rplay",
+                                                search: "?returnGameToPlay=true",
+                                                state: { returnGameToPlay: this.state.returnGameToPlay }
+                                            }}/>:null}
                 <h1>New Game</h1>
                 <p className={classes.Instructions}>Enter the new game name and expected number of hands. 
                 Additional hands can always be added once the score card is displayed.</p>

@@ -16,7 +16,7 @@ class SelectGame extends Component {
         formIsValid: false,
         options: [{value: "selectplayer", displayValue: "...select player"}],
         teamAdded: null,
-        returnToPlay: false
+        returnTeamToPlay: false
     }
     
     addTeamHandler = (event) => {
@@ -29,7 +29,7 @@ class SelectGame extends Component {
         this.setState({teamAdded: this.state.team});
         const emptyTeamList = [];
         this.setState({team: emptyTeamList, formIsValid: false});
-        typeof this.props.location.state != 'undefined' ? this.setState({returnToPlay: true}, () => {console.log(this.state.returnToPlay)}):null
+        this.setState({returnTeamToPlay: true})
         this.setState({ state: this.state });
     }
 
@@ -94,8 +94,12 @@ class SelectGame extends Component {
         return (
             
         <div className={classes.NewTeam}>
-            {/* {this.state.returnToPlay ? <Redirect to="/rplay"/> : null} */}
-            {this.state.returnToPlay?this.props.history.push('/rplay'):null}
+            {console.log(this.state.returnToPlay)}
+            {this.state.returnTeamToPlay?<Redirect to={{
+                                                pathname: "/rplay",
+                                                search: "?returnTeamToPlay=true",
+                                                state: { returnTeamToPlay: this.state.returnTeamToPlay }
+                                            }}/>:null}
 
                 <h1>New Team</h1>
             <p className={classes.Instructions}>{newTeamInstructions}</p>
@@ -114,7 +118,7 @@ class SelectGame extends Component {
                             return (<li key={index}>{name}</li>);})
                     }
                 </ol>
-                {this.state.returnToPlay ? <Redirect to="/rplay"/> : null}
+                {/* {this.state.returnToPlay ? this.history.pushState(null, 'rplay') : null} */}
                 <Button btnType="Success" clicked={this.addTeamHandler} disabled={!this.state.formIsValid}>SAVE</Button>
                 <Button btnType="Danger" clicked={this.handleCancel}>CANCEL</Button>
                 </form>

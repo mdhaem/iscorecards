@@ -7,7 +7,7 @@
   },
   "private": true,
   "dependencies": {
-    "ajv": "^6.5.2",
+    "ajv": "^6.10.0",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
     "babel-core": "6.26.0",
@@ -38,7 +38,7 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "object-assign": "4.1.1",
@@ -122,5 +122,8 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "devDependencies": {
+    "jest-enzyme": "^7.0.2"
   }
 }
