@@ -2,15 +2,15 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../Shared/utility';
 
 const initialState = {
-    plist: [{firstName: "Mike", lastName: "DHaem", user: "IuTewWb2H8PN2RyBuX6DJp83jIx2"}],
+    playerList: [{firstName: '', fullName: '', lastName: '', user: ''}],
     error: false
 };
 
 const fetchPlayers = (state, action) => {
-    console.log(action.players);
-    console.log(state);
+    console.log(action.playerList);
+    if (action.playerList.length === 0) {action.playerList = null}
     return updateObject( state, {
-        plist: action.players,
+        playerList: action.playerList,
         error: false
     } );
 };

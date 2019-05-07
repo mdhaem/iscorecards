@@ -32,7 +32,7 @@ const newPlayerForm = ({
                 <label>Last Name</label>
                 <Field type="text" name="lastName" className={classes.Input} placeholder="Enter last name..." />
             </div>
-                
+            <Button btnType="Danger" clicked={this.handleCancel}>CANCEL</Button>    
             <Button btnType="Success" type="submit" disabled={isSubmitting}>Save New Player</Button>
         </Form>
         </div>

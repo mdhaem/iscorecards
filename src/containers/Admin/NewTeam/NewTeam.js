@@ -1,28 +1,30 @@
 import React, {Component} from  'react';
 import {connect} from 'react-redux';
-import { reset } from 'redux-form';
+// import { reset } from 'redux-form';
 import {Redirect} from 'react-router-dom';
-import axios from '../../../store/axios-data';
+// import axios from '../../../store/axios-data';
 
 import classes from './NewTeam.css';
 import Button from '../../../components/UI/Button/Button';
 import * as actions from '../../../store/actions';
 import FormCode from './NewTeamForm';
-import { updateObject } from '../../../Shared/utility'; 
+// import { updateObject } from '../../../Shared/utility'; 
+import { optionsAvailable } from '../../../Shared/optionsAvailable'
 
 class SelectGame extends Component {
     state = {
         team: [],
         formIsValid: false,
-        options: [{value: "selectplayer", displayValue: "...select player"}],
+        options: {value: "selectplayer", displayValue: "...select player"},
         teamAdded: null,
-        returnTeamToPlay: false
+        returnTeamToPlay: false,
+        returnHome: false
     }
     
     addTeamHandler = (event) => {
         event.preventDefault();
         const newTeam = {
-            user: this.props.user,
+            user: this.props.userId,
             team: this.state.team
         }
         this.props.onAddTeam(newTeam, this.props.token);
@@ -34,19 +36,7 @@ class SelectGame extends Component {
     }
 
     componentDidMount() {
-        const newState = this.state;
-        const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + this.props.user + '"';
-        axios.get('/players.json' + queryParams)
-          .then(res => {
-            const result = Object.keys(res.data).map(i => res.data[i]);
-            const playerOptions = [{value: "selectplayer", displayValue: "...select player"}];
-            result.map((player) => {
-                return playerOptions.push({value: player.fullName, displayValue: player.fullName});
-            });
-            newState.options = playerOptions;
-            updateObject( this.state, newState );
-            this.setState(this.state); 
-          });
+        this.props.onFetchPlayers(this.props.tokenId, this.props.userId)
       }
 
     handleNameSelect = (event, newValue, previousValue, name) => {
@@ -64,11 +54,21 @@ class SelectGame extends Component {
       }
 
     handleCancel = () => {
-        this.props.cancelNewTeam();
-        reset();
+        this.setState({ returnHome: true})
     }
 
     render() {
+        let noPlayerOptions = optionsAvailable(this.props.playerList, this.props.location.state, 'returnNewTeam', this.props)
+
+        let playerOptions = []
+        console.log('PLAYERS UNDEFINED: ', typeof this.props.playerList === 'undefined')
+        console.log(this.props.playerList)
+        if(!noPlayerOptions){
+            playerOptions.push(this.state.options);
+            this.props.playerList.map((player) => {
+                return playerOptions.push({value: player.fullName, displayValue: player.fullName});
+            });
+        }
         
         let form;
         console.log(this.state.returnToPlay)
@@ -88,7 +88,7 @@ class SelectGame extends Component {
         }
 
         let newTeamInstructions = 'To create a new team, select two or more members from the players list.';
-        typeof this.props.location.state != 'undefined'? 
+        typeof this.props.location.state !== 'undefined'? 
             newTeamInstructions = 'Please create a team to continue.' : null
             
         return (
@@ -105,7 +105,7 @@ class SelectGame extends Component {
             <p className={classes.Instructions}>{newTeamInstructions}</p>
                 {form}
                 <FormCode 
-                    options={this.state.options}
+                    options={playerOptions}
                     team={this.state.team}
                     changed={this.handleNameSelect} 
                     newTeam ={this.state.team}/> 
@@ -118,9 +118,10 @@ class SelectGame extends Component {
                             return (<li key={index}>{name}</li>);})
                     }
                 </ol>
-                {/* {this.state.returnToPlay ? this.history.pushState(null, 'rplay') : null} */}
+                {noPlayerOptions?<Redirect to='/newPlayer' />:null}
+                {this.state.returnHome?<Redirect to='/Home' />:null}                  
                 <Button btnType="Success" clicked={this.addTeamHandler} disabled={!this.state.formIsValid}>SAVE</Button>
-                <Button btnType="Danger" clicked={this.handleCancel}>CANCEL</Button>
+                <Button type="button" btnType="Danger" clicked={this.handleCancel}>CANCEL</Button>
                 </form>
         </div>
         );
@@ -129,15 +130,17 @@ class SelectGame extends Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.auth.localId,
-        token: state.auth.idToken,
+        playerList: state.playerList.playerList,
+        tokenId: state.auth.idToken,
+        userId: state.auth.localId,
         teamAdded: state.newTeam.teamAdded
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddTeam: (newTeam, token) => dispatch(actions.addNewTeam(newTeam, token)),
+        onFetchPlayers: (tokenId, userId) => dispatch( actions.initPlayers(tokenId, userId)),
+        onAddTeam: (newTeam, tokenId) => dispatch(actions.addNewTeam(newTeam, tokenId)),
         cancelNewTeam: () => dispatch(actions.cancelNewTeam())
     };
 };

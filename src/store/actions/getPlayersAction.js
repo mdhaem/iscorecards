@@ -5,7 +5,7 @@ export const fetchPlayers = ( players ) => {
     console.log(players)
     return {
         type: actionTypes.FETCH_PLAYERS,
-        players: players
+        playerList: players
     };
 };
 
@@ -17,7 +17,9 @@ export const fetchPlayersFailed = () => {
 
 export const initPlayers = () => {
     return dispatch => {
-        axios.get( '/players.json' )
+        console.log(localStorage.getItem('userId'))
+        const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + localStorage.getItem('userId') + '"';
+        axios.get('/players.json' + queryParams)
             .then( response => {
                 console.log('response.data',response.data);
                 const result = Object.keys(response.data).map(i => response.data[i])

@@ -9,6 +9,7 @@ import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
 import { checkValidity, getUniqueGameNamesFromTeamProps, getFirstNamesFromTeamsProps, getUniqueArray } from '../../../Shared/utility';
+import { optionsAvailable } from '../../../Shared/optionsAvailable'
 
 class RegisteredGame extends Component {
     state = {
@@ -18,7 +19,9 @@ class RegisteredGame extends Component {
         gameOptionTouched: false,
         teamOptionTouched: false,
         noTeamOptions: false,
-        noGameOptions: false  
+        noGameOptions: false,
+        redirect: false,
+        redirectHome:false  
     }
 
     getHandsFromSelectedGame = (selectedGame) => {
@@ -89,33 +92,37 @@ class RegisteredGame extends Component {
         this.props.onFetchTeams(this.props.tokenId, this.props.userId)
       }
 
-      optionsAvailable= (options, referrer, optionType) => {
-        let noOptions = false
-        options === null && noOptions === false ? noOptions = true : noOptions = false
+    //   optionsAvailable= (options, referrer, optionType) => {
+    //     let noOptions = false
+    //     options === null && noOptions === false ? noOptions = true : noOptions = false
 
-        typeof referrer !=='undefined' ? console.log(Object.keys(referrer)[0]):null
-        typeof referrer !=='undefined' ? console.log(Object.values(referrer)[0]):null
+    //     typeof referrer !=='undefined' ? console.log(Object.keys(referrer)[0]):null
+    //     typeof referrer !=='undefined' ? console.log(Object.values(referrer)[0]):null
         
-        typeof referrer !=='undefined' &&
-        Object.values(referrer)[0] &&
-        Object.keys(referrer)[0] === 'returnGameToPlay' &&
-        options === null  ? this.props.onFetchGames(this.props.tokenId, this.props.userId) : null
+    //     typeof referrer !=='undefined' &&
+    //     Object.values(referrer)[0] &&
+    //     Object.keys(referrer)[0] === 'returnGameToPlay' &&
+    //     options === null  ? this.props.onFetchGames(this.props.tokenId, this.props.userId) : null
 
-        typeof referrer !=='undefined' &&
-        Object.values(referrer)[0] &&
-        Object.keys(referrer)[0] === 'returnTeamToPlay' &&
-        options === null  ? this.props.onFetchTeams(this.props.tokenId, this.props.userId) : null
+    //     typeof referrer !=='undefined' &&
+    //     Object.values(referrer)[0] &&
+    //     Object.keys(referrer)[0] === 'returnTeamToPlay' &&
+    //     options === null  ? this.props.onFetchTeams(this.props.tokenId, this.props.userId) : null
 
-        typeof referrer !== 'undefined' && 
-        Object.values(referrer)[0] &&
-        Object.keys(referrer)[0] === optionType ? noOptions = false : null
+    //     typeof referrer !== 'undefined' && 
+    //     Object.values(referrer)[0] &&
+    //     Object.keys(referrer)[0] === optionType ? noOptions = false : null
 
-        return noOptions
-      }
+    //     return noOptions
+    //   }
 
+    quitHandler = () => {
+        this.setState({redirectHome: true})
+    }
+      
     render() {
-        let noGameOptions = this.optionsAvailable(this.props.games, this.props.location.state, 'returnGameToPlay')
-        let noTeamOptions = this.optionsAvailable(this.props.teams, this.props.location.state, 'returnTeamToPlay')
+        let noGameOptions = optionsAvailable(this.props.games, this.props.location.state, 'returnGameToPlay', this.props)
+        let noTeamOptions = optionsAvailable(this.props.teams, this.props.location.state, 'returnTeamToPlay', this.props)
 
         const gameOptions = []
         if (!noGameOptions) {
@@ -185,7 +192,7 @@ class RegisteredGame extends Component {
                     // onFocus={this.handleOnFocus}
                 />
             </div>
-                <Button btnType="Danger">CANCEL</Button>
+                <Button btnType="Danger" clicked={this.quitHandler}>QUIT</Button>
                 <Button btnType="Success" disabled={!this.state.formIsValid}>CONTINUE TO SCORECARD</Button>
             </form>
         );
@@ -201,6 +208,7 @@ class RegisteredGame extends Component {
                 {this.state.redirect?<Redirect to="/scorecard" />:null}
                 {noTeamOptions?<Redirect to='/newTeam' />:null}
                 {noGameOptions?<Redirect to='/newGame' />:null}
+                {this.state.redirectHome?<Redirect to="/home" />:null}
                 {form}
             </div>
         );
