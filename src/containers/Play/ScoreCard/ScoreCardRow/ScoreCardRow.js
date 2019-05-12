@@ -8,7 +8,7 @@ import * as classes from './ScoreCardRow.css';
 // import ScoreCardCell from '../ScoreCell/ScoreCardCell';
 import {saveGameTotals} from '../../../../Shared/saveGameTotals'
 import Button from '../../../../components/UI/Button/Button';
-//import Aux from '../../../../hoc/Aux/Aux';
+//import Auxx from '../../../../hoc/Auxx/Auxx';
 import ScoreCardRows from '../ScoreCardRows/ScoreCardRows'
 import ScoreCardPlayers from '../ScoreCardPlayers/ScoreCardPlayers'
 import ScoreCardTotals from '../ScoreCardTotals/ScoreCardTotals'

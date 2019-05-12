@@ -2,7 +2,7 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 
 import * as classes from './ImportGameHistory.css';
-//import Aux from '../../../hoc/Aux/Aux';
+//import Auxx from '../../../hoc/Auxx/Auxx';
 
 const FormCode = props => {
   const { error, handleSubmit, pristine, reset, submitting, changed=[] } = props
