@@ -21,7 +21,7 @@ export const initPlayers = () => {
         const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + localStorage.getItem('userId') + '"';
         axios.get('/players.json' + queryParams)
             .then( response => {
-                console.log('response.data',response.data);
+                console.log('response.data', response.data);
                 const result = Object.keys(response.data).map(i => response.data[i])
                 console.log(result);
                dispatch(fetchPlayers(result));

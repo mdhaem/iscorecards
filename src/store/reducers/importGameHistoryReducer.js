@@ -5,12 +5,7 @@ const initialState = {
     user: '',
     date: '',
     game: '',
-    players: [
-        {id: 1, player: 'Bill'}, 
-        {id: 2, player: 'Bev'}, 
-        {id: 3, player: 'Mike'}, 
-        {id: 4, player: 'Sandy'}
-    ],
+    players: [],
     scores: [],
     loading: false,
     scoreAdded: false

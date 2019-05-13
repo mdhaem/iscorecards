@@ -92,31 +92,7 @@ class RegisteredGame extends Component {
         this.props.onFetchTeams(this.props.tokenId, this.props.userId)
       }
 
-    //   optionsAvailable= (options, referrer, optionType) => {
-    //     let noOptions = false
-    //     options === null && noOptions === false ? noOptions = true : noOptions = false
-
-    //     typeof referrer !=='undefined' ? console.log(Object.keys(referrer)[0]):null
-    //     typeof referrer !=='undefined' ? console.log(Object.values(referrer)[0]):null
-        
-    //     typeof referrer !=='undefined' &&
-    //     Object.values(referrer)[0] &&
-    //     Object.keys(referrer)[0] === 'returnGameToPlay' &&
-    //     options === null  ? this.props.onFetchGames(this.props.tokenId, this.props.userId) : null
-
-    //     typeof referrer !=='undefined' &&
-    //     Object.values(referrer)[0] &&
-    //     Object.keys(referrer)[0] === 'returnTeamToPlay' &&
-    //     options === null  ? this.props.onFetchTeams(this.props.tokenId, this.props.userId) : null
-
-    //     typeof referrer !== 'undefined' && 
-    //     Object.values(referrer)[0] &&
-    //     Object.keys(referrer)[0] === optionType ? noOptions = false : null
-
-    //     return noOptions
-    //   }
-
-    quitHandler = () => {
+       quitHandler = () => {
         this.setState({redirectHome: true})
     }
       
@@ -130,7 +106,7 @@ class RegisteredGame extends Component {
             this.props.games !== null && this.props.games.length > 0 ?
                 uniqueGames = getUniqueGameNamesFromTeamProps(this.props.games) : uniqueGames = []
 
-            uniqueGames.map((item) => {
+            uniqueGames.map((item, index) => {
                 gameOptions.push({value: item, label: item})
                 return gameOptions
             })
@@ -138,6 +114,7 @@ class RegisteredGame extends Component {
 
         const teamOptions = []
         if (!noTeamOptions) {
+            console.log( this.props.teams)
             let teamsFirstNames = []
             this.props.teams !== null && this.props.teams.length > 0 ?
                 teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []

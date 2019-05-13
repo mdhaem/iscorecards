@@ -4,7 +4,7 @@ import ScoreCardCell from '../../../Play/ScoreCard/ScoreCell/ScoreCardCell';
 import {times} from '../../../../Shared/utility'
 
 const scoreCardRows = props => {
-    // console.log(props, 'SCORECARDROWS PROPS')
+    console.log(props, 'SCORECARDROWS PROPS')
     let row = [];
     let count = props.count*1
     let hands = props.hands*1
@@ -29,7 +29,7 @@ const scoreCardRows = props => {
                     // column={c}
                     type='number'
                     value={0}
-                    // changed={(event) => props.inputChangedHandler(event, id, (c+1), r)}
+                    changed={props.changed}
                     />)
             })                         
 console.log(row)
@@ -37,12 +37,12 @@ console.log(row.length)
     let frow = [];
     let irowKey = 0;
     while (row.length) {
-        let irow = row.splice(0, props.team.length)
+        let irow = row.splice(0, 2)
         console.log(irow)
         if(irow.length < 1) break 
         irowKey++;
+        console.log(irow)
         frow.push(<div key={'irow'+irowKey}>{irow}</div>);
-        // !!(irowKey % 2) ? frow.push(<br/>) : null
     }
 console.log(frow)
     return frow

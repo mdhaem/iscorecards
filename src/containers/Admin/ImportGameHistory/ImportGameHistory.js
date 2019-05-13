@@ -2,7 +2,9 @@ import React, {Component} from  'react';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
 import Select from 'react-select'
-import DatePicker from '../../../components/UI/DatePicker/DatePicker';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import * as moment from 'moment'
 
 import classes from './ImportGameHistory.css';
 import Button from '../../../components/UI/Button/Button';
@@ -16,19 +18,15 @@ class RegisteredGame extends Component {
         formIsValid: false,
         selectedGame: '',
         selectedTeam: '',
+        selectedDate: moment(),
+        selectedScores: [],
         gameOptionTouched: false,
-        teamOptionTouched: false
+        teamOptionTouched: false,
     }
 
-    // getHandsFromSelectedGame = (selectedGame) => {
-    //     // console.log(this.props.games)
-    //     // console.log(this.props.games.find(x => x.b === selectedGame.game))
-    //     return this.props.games.find(x => x.b === selectedGame.game).hands
-    // }
-
-    handleChange = (selectedOption, optionMeta) => {
-        // console.log(selectedOption)
-        // console.log(optionMeta)
+    handleOptionSelect = (selectedOption, optionMeta) => {
+        console.log(selectedOption)
+        console.log(optionMeta)
         switch(optionMeta.name){
             case "selectedGame":
                 if(checkValidity(selectedOption.value, {changed: true})){
@@ -59,15 +57,31 @@ class RegisteredGame extends Component {
         }
     }
 
-    registedGamePlayHandler = (event) => {
+
+    scoreInputChangeHandler = event => {
+        console.log(event.target)
+        console.log(event.target.value)
+    }
+
+    handleDateChange = date => {
+        console.log(moment(date).format('MM-DD-YYYY'))
+        this.setState({selectedDate: date})
+      };
+
+    saveRegisteredGameHistory = (event) => {
         event.preventDefault();
-        const scoreCard = {
+        console.log(this.state.selectedDate)
+        console.log(Date.startDate)
+        const  newHistory = {
+            user: localStorage.getItem('userId'),
+            scoresDate: moment(this.state.selectedDate).format('MM-DD-YYYY'),
             game: this.state.selectedGame,
-            players: this.state.selectedTeam,
-            hands: this.getHandsFromSelectedGame(this.state.selectedGame),
-            registered: this.props.registered
+            team: this.state.selectedTeam,
+            scores: '', //values.scores,
+            gameNumber: 1
         }
-        this.props.onNewScoreCard(scoreCard);
+        console.log(newHistory)
+        this.props.onAddGameResult(newHistory);
         this.setState(this.state); 
         this.setState({redirect: true}); 
     }
@@ -118,16 +132,7 @@ class RegisteredGame extends Component {
               return { ...provided };
             }
           }
-
-          const onChangeFct = () => console.log("onChange usually handled by redux");
         
-        const data = [
-            {name: 'Mike',
-            score: 0},
-            {name: 'Sandy',
-            score: 5}
-        ]
-
           const tableColumns = [
             {
                 header: 'Id',
@@ -136,25 +141,25 @@ class RegisteredGame extends Component {
             {
                 header: 'Name',
                 accessor: 'name',
-                render: props => <input value={props.row.name} onChange={onChangeFct} />
+                render: props => <input value={props.row.name}  />
             },
             {
                 header: 'Score',
                 accessor: 'score',
-                render: props => <input value={props.row.name} onChange={onChangeFct} />
+                render: props => <input value={props.row.name}  />
             }
         ]
 
 
         let form = (
-            <form onSubmit={this.registedGamePlayHandler}> 
+            <form onSubmit={this.saveRegisteredGameHistory}> 
             <div>
                 <Select
                     styles={customStyles}
                     name="selectedGame"
                     placeholder="...select a game"
                     value={this.selectedOption}
-                    onChange={this.handleChange}
+                    onChange={this.handleOptionSelect}
                     options={gameOptions}
                 />
             </div>
@@ -164,11 +169,11 @@ class RegisteredGame extends Component {
                     name="selectedTeam"
                     placeholder="...select a team"
                     value={this.selectedOption}
-                    onChange={this.handleChange}
+                    onChange={this.handleOptionSelect}
                     options={teamOptions}
                 />
             </div>
-            <div>{this.state.selectedTeam.length > 0 ? <GameScoreHistory team={this.state.selectedTeam}/> : null}</div>
+            <div>{this.state.selectedTeam.length > 0 ? <GameScoreHistory team={this.state.selectedTeam} changed={this.scoreInputChangeHandler}/> : null}</div>
                 <Button btnType="Danger">CANCEL</Button>
                 <Button btnType="Success" disabled={!this.state.formIsValid}>SAVE</Button>
             </form>
@@ -183,12 +188,11 @@ class RegisteredGame extends Component {
             <div className={classes.ImportGameHistory}>
                 <h1>Import Scores</h1>
                 <p className={classes.Instructions}>Select game then team.</p>
-                <DatePicker selected={this.props.date} onChange={this.handleChange} />
+                <DatePicker selected={this.state.selectedDate} onChange={this.handleDateChange}/>
 
                 <p>{this.state.selectedGame} {this.state.selectedTeam}</p>
                 {this.state.redirect?<Redirect to="/scorecard" />:null}
                 {form}
-                {/* <div>{this.state.selectedTeam.length > 0 ? <GameScoreHistory team={this.state.selectedTeam}/> : null}</div> */}
             </div>
 
             </React.Fragment>
@@ -205,14 +209,15 @@ const mapStateToProps = state => {
         games: state.games.games,
         teams: state.teams.teams,
         tokenId: state.auth.idToken,
-        userId: state.auth.localId
+        userId: state.auth.localId,
+
+        noTeamOptions: state.teams.noTeamOptions
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onNewScoreCard: (scoreCard) => dispatch(actions.makeScoreCard(scoreCard)),
-        // onAddGameResult: (scoreCard) => dispatch(actions.addGameResult(scoreCard)),
+        onAddGameResult: (scoreCard) => dispatch(actions.addGameResult(scoreCard)),
         onFetchGames: (tokenId, userId) => dispatch( actions.initGames(tokenId, userId)),
         onFetchTeams: (tokenId, userId) => dispatch( actions.initTeams(tokenId, userId)),
     };

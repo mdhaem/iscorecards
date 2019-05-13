@@ -16,11 +16,11 @@ const scoreCardPlayers = props => {
     )
 
     const players = props.players;
-        players.map( player => (               
+        players.map( (player, index )=> (               
             gamePlayers.push(
                 <ScoreCardCell 
-                    key={player}
-                    id={player}
+                    key={index}
+                    id={index}
                     type='text'
                     defaultValue={player}/>
             )

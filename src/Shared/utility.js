@@ -6,6 +6,12 @@ export const updateObject = (oldObject, updatedProperties) => {
     };
 };
 
+// export const getHandsFromSelectedGame = (selectedGame, games) => {
+//     const gameUnique = getUniqueArray(games)
+//     return _.find(gameUnique, function(o) {return o.game === selectedGame}).hands
+// }
+
+
 export const getFirstNamesFromTeamsProps = (propsArray) => {
     let names = []
     const teamFirstNames = []
