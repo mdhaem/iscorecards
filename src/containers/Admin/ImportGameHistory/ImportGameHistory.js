@@ -19,7 +19,7 @@ class RegisteredGame extends Component {
         selectedGame: '',
         selectedTeam: '',
         selectedDate: moment(),
-        selectedScores: [],
+        scores: [],
         gameOptionTouched: false,
         teamOptionTouched: false,
     }
@@ -57,27 +57,26 @@ class RegisteredGame extends Component {
         }
     }
 
-
-    scoreInputChangeHandler = event => {
-        console.log(event.target)
-        console.log(event.target.value)
-    }
+    handleBlur = (e) => {
+        let newScore = this.state.scores
+        newScore.push({[e.target.id]: e.target.value})
+        this.setState({ scores: newScore}) //, () => {console.log(this.state.scores)})
+      }
 
     handleDateChange = date => {
-        console.log(moment(date).format('MM-DD-YYYY'))
         this.setState({selectedDate: date})
       };
 
     saveRegisteredGameHistory = (event) => {
         event.preventDefault();
-        console.log(this.state.selectedDate)
-        console.log(Date.startDate)
+        (Date.startDate)
         const  newHistory = {
             user: localStorage.getItem('userId'),
             scoresDate: moment(this.state.selectedDate).format('MM-DD-YYYY'),
             game: this.state.selectedGame,
             team: this.state.selectedTeam,
-            scores: '', //values.scores,
+            scores: this.state.scores,
+            winner: '',
             gameNumber: 1
         }
         console.log(newHistory)
@@ -173,7 +172,13 @@ class RegisteredGame extends Component {
                     options={teamOptions}
                 />
             </div>
-            <div>{this.state.selectedTeam.length > 0 ? <GameScoreHistory team={this.state.selectedTeam} changed={this.scoreInputChangeHandler}/> : null}</div>
+            <div>{this.state.selectedTeam.length > 0 ?
+                 <GameScoreHistory 
+                    team={this.state.selectedTeam} 
+                    // changed={this.scoreInputChangeHandler}
+                    blur={this.handleBlur}
+                    /> : null}
+            </div>
                 <Button btnType="Danger">CANCEL</Button>
                 <Button btnType="Success" disabled={!this.state.formIsValid}>SAVE</Button>
             </form>
@@ -188,7 +193,7 @@ class RegisteredGame extends Component {
             <div className={classes.ImportGameHistory}>
                 <h1>Import Scores</h1>
                 <p className={classes.Instructions}>Select game then team.</p>
-                <DatePicker selected={this.state.selectedDate} onChange={this.handleDateChange}/>
+                <DatePicker selected={this.state.selectedDate} value={this.state.selectedDate} onChange={this.handleDateChange}/>
 
                 <p>{this.state.selectedGame} {this.state.selectedTeam}</p>
                 {this.state.redirect?<Redirect to="/scorecard" />:null}

@@ -3,7 +3,6 @@ import React from 'react';
 import * as classes from './ScoreCardCell.css';
 
 const scoreCardCell = (props) => {
-    //console.log(props.id);
 
     const cell = <input
                     key={props.id} 
@@ -15,7 +14,7 @@ const scoreCardCell = (props) => {
                     placeholder={props.placeholder}
                     type={props.type} 
                     column={props.column}
-                    onBlur={null}
+                    onBlur={props.blur}
                     onChange={props.changed}
                     onFocus={props.focus} />;
     //console.log(cell);

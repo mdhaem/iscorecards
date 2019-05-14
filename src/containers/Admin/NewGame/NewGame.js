@@ -35,6 +35,21 @@ class NewGame extends Component {
                     isNumeric: true
                 },
                 valid: true
+            },
+            winningHand: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [{value: '', displayValue: '...select winning hand'},
+                              {value: 'High Score', displayValue: 'High Score'},
+                              {value: 'Low Score', displayValue: 'Low Score'}],
+                    placeholder: 'Enter winning hand...'
+                },
+                value: '',
+                validation: {
+                    changed: true
+                },
+                valid: false,
+                touched: false
             }
         },
         formIsValid: false,
@@ -83,7 +98,8 @@ class NewGame extends Component {
         const newGame = {
             user: this.props.user,
             game: this.state.newGameForm.name.value,
-            hands: this.state.newGameForm.hands.value
+            hands: this.state.newGameForm.hands.value,
+            winningHand: this.state.newGameForm.winningHand.value
         }
         
         this.props.onAddGame(newGame, this.props.token);

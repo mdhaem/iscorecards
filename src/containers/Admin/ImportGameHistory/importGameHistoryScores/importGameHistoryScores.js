@@ -4,7 +4,7 @@ import ScoreCardCell from '../../../Play/ScoreCard/ScoreCell/ScoreCardCell';
 import {times} from '../../../../Shared/utility'
 
 const scoreCardRows = props => {
-    console.log(props, 'SCORECARDROWS PROPS')
+    // console.log(props, 'SCORECARDROWS PROPS')
     let row = [];
     let count = props.count*1
     let hands = props.hands*1
@@ -28,23 +28,24 @@ const scoreCardRows = props => {
                     id={teamMemberScoreId}
                     // column={c}
                     type='number'
-                    value={0}
+                    value={props.score}
                     changed={props.changed}
+                    blur={props.blur}
                     />)
             })                         
-console.log(row)
-console.log(row.length)
+// console.log(row)
+// console.log(row.length)
     let frow = [];
     let irowKey = 0;
     while (row.length) {
         let irow = row.splice(0, 2)
-        console.log(irow)
+        // console.log(irow)
         if(irow.length < 1) break 
         irowKey++;
-        console.log(irow)
+        // console.log(irow)
         frow.push(<div key={'irow'+irowKey}>{irow}</div>);
     }
-console.log(frow)
+// console.log(frow)
     return frow
 }
 
