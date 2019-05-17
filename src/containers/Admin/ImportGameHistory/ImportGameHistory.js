@@ -59,7 +59,7 @@ class RegisteredGame extends Component {
 
     handleBlur = (e) => {
         let newScore = this.state.scores
-        newScore.push({[e.target.id]: e.target.value})
+        newScore.push({id: e.target.id, score: e.target.value})
         this.setState({ scores: newScore}) //, () => {console.log(this.state.scores)})
       }
 
@@ -67,8 +67,19 @@ class RegisteredGame extends Component {
         this.setState({selectedDate: date})
       };
 
+calculateWinner = (scores) => {
+    if(scores.length > 0) {
+        const highScore = Math.max.apply(Math, scores.map(function(o) { return o.score; }))
+        console.log(scores)
+        console.log(highScore)
+    }
+}
+
     saveRegisteredGameHistory = (event) => {
         event.preventDefault();
+        // this.calculateWinner(this.state.scores)
+        console.log(this.state.scores)
+        const highScore = this.state.scores.reduce((acc, shot) => acc = acc > shot.score ? acc : shot.score, 0);
         (Date.startDate)
         const  newHistory = {
             user: localStorage.getItem('userId'),
@@ -76,7 +87,7 @@ class RegisteredGame extends Component {
             game: this.state.selectedGame,
             team: this.state.selectedTeam,
             scores: this.state.scores,
-            winner: '',
+            winner: highScore,
             gameNumber: 1
         }
         console.log(newHistory)
