@@ -17,6 +17,7 @@ import newPlayeReducer from './store/reducers/newPlayerReducer';
 import getPlayersReducer from './store/reducers/getPlayersReducer';
 import newTeamReducer from './store/reducers/newTeamReducer';
 import getGamesReducer from './store/reducers/getGamesReducer';
+import getGameHistoryReducer from './store/reducers/getGameHistoryReducer';
 import getTeamsReducer from './store/reducers/getTeamsReducer';
 import scoreCardReducer from './store/reducers/scoreCardReducer';
 import {reducer as formReducer } from 'redux-form';
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
     newTeam: newTeamReducer,
     playerList: getPlayersReducer,
     games: getGamesReducer,
+    history: getGameHistoryReducer,
     teams: getTeamsReducer,
     scoreCard: scoreCardReducer,
     form: formReducer

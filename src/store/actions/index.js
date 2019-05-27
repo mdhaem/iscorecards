@@ -31,6 +31,11 @@ export {
 } from './getGamesAction';
 
 export {
+    initHistory,
+    fetchGameHistory
+} from './getGameHistoryAction';
+
+export {
     initTeams,
     fetchTeams
 } from './getTeamsAction';

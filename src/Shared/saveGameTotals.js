@@ -1,5 +1,31 @@
 import axios from '../store/axios-data';
 
+export const history = ( history, game, team ) => {
+    const filter = {
+        game,
+        team,
+        
+    }
+
+    const exists = history.filter((item) => {
+        for (var key in filter) {
+
+            if (item[key] === undefined){
+                return false;
+            }
+            
+            if(Array.isArray(filter[key]) && simpleEqual(item[key], filter[key])) {
+                return true;
+            } else if (item[key] !== filter[key]) {
+                return false;
+            }
+
+        }
+        return true;
+    })
+
+    return exists
+}
 
 export const saveGameTotals = async ( gameFinalScore ) => {
     //get all games for user

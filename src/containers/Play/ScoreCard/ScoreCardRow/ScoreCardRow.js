@@ -17,6 +17,7 @@ import ScoreCardGameHistory from '../ScoreCardGameHistory/ScoreCardGameHistory'
 class ScoreCardRow extends Component {
     state = {
         game: this.props.game,
+        history: this.props.history,
         totals: [],
         row: [],
         hands: this.props.hands,
@@ -199,6 +200,7 @@ class ScoreCardRow extends Component {
 
     ////////////////////////////////////////////////////////
     render (props) {
+        console.log('GAME HISTORY: ', this.state.history)
         return (
             <React.Fragment>
             {this.state.message ? <p>{this.state.message}</p> : null}
@@ -208,7 +210,8 @@ class ScoreCardRow extends Component {
                 <div className={classes.ScoreCardRows}>
                     <ScoreCardGameHistory
                         count={this.state.count}
-                        times={this.times}>
+                        times={this.times}
+                        history={this.props.history}>
                     </ScoreCardGameHistory>
                 </div>
                 : null}
@@ -257,6 +260,7 @@ const mapStateToProps = state => {
     return {
             players: state.scoreCard.players,
             game: state.scoreCard.game,
+            history: state.history.history,
             hands: state.scoreCard.hands,
             registered: state.scoreCard.registered,
             token: state.auth.idToken,

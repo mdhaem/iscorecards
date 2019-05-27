@@ -11,7 +11,7 @@ import Button from '../../../components/UI/Button/Button'
 const queryParams = '?orderBy="user"&equalTo="' + localStorage.getItem('userId') + '"';
 
 const gHistory = []
-const gameHistory = () => {
+const history = () => {
     // const options = [{game: 'select a game'}]
     //const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="userId"&equalTo="' + localStorage.getItem('userId') + '"';
     axios.get( '/history.json' + queryParams)
@@ -134,7 +134,7 @@ const UpdateGameForm = withFormik({
             scores: [],
             exists: false,
             scoresDate: moment(new Date()).format('MM-DD-YYYY'),
-            gHistory: gameHistory()
+            gHistory: history()
 
             
         }

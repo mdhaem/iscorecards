@@ -79,7 +79,7 @@ calculateWinner = (scores) => {
         event.preventDefault();
         // this.calculateWinner(this.state.scores)
         console.log(this.state.scores)
-        const highScore = this.state.scores.reduce((acc, shot) => acc = acc > shot.score ? acc : shot.score, 0);
+        const highScore = this.state.scores.reduce((acc, shot) => acc = acc > shot.score ? shot : shot.id, 0);
         (Date.startDate)
         const  newHistory = {
             user: localStorage.getItem('userId'),
@@ -115,7 +115,7 @@ calculateWinner = (scores) => {
         let teamsFirstNames = []
         this.props.teams.length > 1 ?
             teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []
-
+this.props.teams.length > 0 ? console.log(this.props.teams) : null
         const teamOptions = []
         teamsFirstNames.map((item, index) => {
             teamOptions.push({value: item, label: item.toString().replace(/,/g, ', ')})

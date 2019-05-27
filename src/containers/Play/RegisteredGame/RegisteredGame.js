@@ -70,11 +70,13 @@ class RegisteredGame extends Component {
 
     registedGamePlayHandler = (event) => {
         event.preventDefault();
+        console.log(this.props.history)
         const scoreCard = {
             game: this.state.selectedGame,
             players: this.state.selectedTeam,
             hands: this.getHandsFromSelectedGame(this.state.selectedGame),
-            registered: this.props.registered
+            registered: this.props.registered,
+            history: this.props.history
         }
         console.log(scoreCard)
         this.props.onNewScoreCard(scoreCard);
@@ -89,7 +91,9 @@ class RegisteredGame extends Component {
         // console.log(this.props.userId)
         // this.props.onFetchGames(localStorage.getItem("tokenId"), localStorage.getItem("userId")) 
         this.props.onFetchGames(this.props.tokenId, this.props.userId) 
+        this.props.onFetchGameHistory(this.props.tokenId, this.props.userId) 
         this.props.onFetchTeams(this.props.tokenId, this.props.userId)
+
       }
 
        quitHandler = () => {
@@ -97,6 +101,7 @@ class RegisteredGame extends Component {
     }
       
     render() {
+        // console.log(actions)
         let noGameOptions = optionsAvailable(this.props.games, this.props.location.state, 'returnGameToPlay', this.props)
         let noTeamOptions = optionsAvailable(this.props.teams, this.props.location.state, 'returnTeamToPlay', this.props)
 
@@ -114,7 +119,7 @@ class RegisteredGame extends Component {
 
         const teamOptions = []
         if (!noTeamOptions) {
-            console.log( this.props.teams)
+            // console.log( this.props.teams)
             let teamsFirstNames = []
             this.props.teams !== null && this.props.teams.length > 0 ?
                 teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []
@@ -198,6 +203,7 @@ const mapStateToProps = state => {
         registered: state.scoreCard.registered,
 
         games: state.games.games,
+        history: state.history.history,
         teams: state.teams.teams,
         tokenId: state.auth.idToken,
         userId: state.auth.localId,
@@ -210,6 +216,7 @@ const mapDispatchToProps = dispatch => {
         onNewScoreCard: (scoreCard) => dispatch(actions.makeScoreCard(scoreCard)),
         onAddGameResult: (scoreCard) => dispatch(actions.addGameResult(scoreCard)),
         onFetchGames: (tokenId, userId) => dispatch( actions.initGames(tokenId, userId)),
+        onFetchGameHistory: (tokenId, userId) => dispatch( actions.initHistory(tokenId, userId)),
         onFetchTeams: (tokenId, userId) => dispatch( actions.initTeams(tokenId, userId)),
     };
 };

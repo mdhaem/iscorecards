@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import axios from '../axios-data';
 
 export const newScoreCard = ( ScoreCard ) => {
+    console.log(ScoreCard)
     return {
         type: actionTypes.SELECTED_SCORECARD_GAME_TEAM,
         CardData: ScoreCard
@@ -9,6 +10,7 @@ export const newScoreCard = ( ScoreCard ) => {
 };
 
 export const makeScoreCard = ( ScoreCard ) => {
+    console.log(ScoreCard)
     return dispatch => {
         dispatch( newScoreCard(ScoreCard) );
     };

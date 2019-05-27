@@ -4,9 +4,9 @@ import ScoreCardCell from '../ScoreCell/ScoreCardCell'
     
 const scoreCardGameHistory = props => {
     let count = props.count*1
-    let gameHistory = [];
+    let history = [];
     
-    gameHistory.push(
+    history.push(
         <ScoreCardCell 
                 key={'history'}
                 id={'history'}
@@ -15,7 +15,7 @@ const scoreCardGameHistory = props => {
                 />)
     props.times (count) (i => {
         let id = 'history'+(i+1); 
-        gameHistory.push(
+        history.push(
         <ScoreCardCell 
                 key={id}
                 id={id}
@@ -24,7 +24,7 @@ const scoreCardGameHistory = props => {
                 />)
     })
 
-    return gameHistory
+    return history
 }
 
 export default scoreCardGameHistory
