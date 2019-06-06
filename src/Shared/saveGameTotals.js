@@ -1,33 +1,12 @@
 import axios from '../store/axios-data';
 
-export const history = ( history, game, team ) => {
-    const filter = {
-        game,
-        team,
-        
-    }
-
-    const exists = history.filter((item) => {
-        for (var key in filter) {
-
-            if (item[key] === undefined){
-                return false;
-            }
-            
-            if(Array.isArray(filter[key]) && simpleEqual(item[key], filter[key])) {
-                return true;
-            } else if (item[key] !== filter[key]) {
-                return false;
-            }
-
-        }
-        return true;
-    })
-
-    return exists
-}
-
 export const saveGameTotals = async ( gameFinalScore ) => {
+    console.log(gameFinalScore)
+    console.log(gameFinalScore.scores)
+    const highScore = gameFinalScore.scores.reduce((acc, shot) => acc = acc > shot.sum ? shot : shot.id, 0);
+    console.log('HIGHSCORE: ', highScore)
+    gameFinalScore.winner = highScore
+    console.log(gameFinalScore)
     //get all games for user
     //https://scorecards-482b8.firebaseio.com/history.json
     const queryParams = '?auth='+ localStorage.getItem('token') + '&orderBy="user"&equalTo="' + gameFinalScore.user + '"';

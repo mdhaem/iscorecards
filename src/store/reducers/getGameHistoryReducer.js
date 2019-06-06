@@ -7,8 +7,8 @@ const initialState = {
 };
 
 const fetchGameHistory = (state, action) => {
-    console.log('STATE: ',state);
-    console.log('ACTION.history: ', action.history);
+    // console.log('STATE: ',state);
+    // console.log('ACTION.history: ', action.history);
     action.history.length === 0 ? action.history = null : null
     return updateObject( state, {
         history: action.history,

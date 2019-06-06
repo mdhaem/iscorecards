@@ -11,7 +11,8 @@ import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
 import { checkValidity, getUniqueGameNamesFromTeamProps, getFirstNamesFromTeamsProps } from '../../../Shared/utility';
-import GameScoreHistory from './importGameHistoryScores/importGameHistoryScores'
+import GameScoreHistory from './importGameHistoryScores/importGameHistoryScores.js'
+import { resolve } from 'dns';
 
 class RegisteredGame extends Component {
     state = {
@@ -67,33 +68,35 @@ class RegisteredGame extends Component {
         this.setState({selectedDate: date})
       };
 
-calculateWinner = (scores) => {
-    if(scores.length > 0) {
-        const highScore = Math.max.apply(Math, scores.map(function(o) { return o.score; }))
-        console.log(scores)
-        console.log(highScore)
-    }
-}
-
     saveRegisteredGameHistory = (event) => {
         event.preventDefault();
-        // this.calculateWinner(this.state.scores)
-        console.log(this.state.scores)
-        const highScore = this.state.scores.reduce((acc, shot) => acc = acc > shot.score ? shot : shot.id, 0);
-        (Date.startDate)
+        console.log(this.state.selectedGame)
+        const highScore = this.state.scores.reduce((acc, cur) => acc = acc.score > cur.score ? acc : cur, 0)
+        const lowScore = this.state.scores.reduce((acc, cur) => acc = acc.score < cur.score ? acc : cur, 0)
+
         const  newHistory = {
             user: localStorage.getItem('userId'),
             scoresDate: moment(this.state.selectedDate).format('MM-DD-YYYY'),
             game: this.state.selectedGame,
             team: this.state.selectedTeam,
             scores: this.state.scores,
-            winner: highScore,
+            winner: lowScore,
             gameNumber: 1
         }
         console.log(newHistory)
         this.props.onAddGameResult(newHistory);
         this.setState(this.state); 
         this.setState({redirect: true}); 
+    }
+
+    calculateWinner = (scores) => {
+        if(scores.length > 0) {
+            const highScore = Math.max.apply(Math, scores.map(function(o) { return o.score; }))
+            console.log(scores)
+            console.log(highScore)
+            return highScore
+        }
+        
     }
 
     componentDidMount(props) {
@@ -115,7 +118,7 @@ calculateWinner = (scores) => {
         let teamsFirstNames = []
         this.props.teams.length > 1 ?
             teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []
-this.props.teams.length > 0 ? console.log(this.props.teams) : null
+// this.props.teams.length > 0 ? console.log(this.props.teams) : null
         const teamOptions = []
         teamsFirstNames.map((item, index) => {
             teamOptions.push({value: item, label: item.toString().replace(/,/g, ', ')})

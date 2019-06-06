@@ -11,8 +11,8 @@ const initialState = {
 };
 
 const newScoreCard = ( state, action ) => {
-    console.log(state);
-    console.log(action.CardData);
+    // console.log(state);
+    // console.log(action.CardData);
     const returnValue = updateObject( state, {
         game: action.CardData.game,
         players: action.CardData.players,
@@ -20,7 +20,7 @@ const newScoreCard = ( state, action ) => {
         registered: action.CardData.registered,
         history: action.CardData.history,
     } );
-    console.log(returnValue)
+    // console.log(returnValue)
     return returnValue;
 };
 

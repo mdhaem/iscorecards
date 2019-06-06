@@ -22,9 +22,9 @@ export const initTeams = (tokenId, userId) => {
 
         axios.get( '/teams.json' + queryParams)
             .then( response => {
-                console.log('TEAM RESPONSE.DATA',response.data);
+                // console.log('TEAM RESPONSE.DATA',response.data);
                 const result = Object.keys(response.data).map(i => response.data[i])
-                console.log('TEAM RESULT: ', result);
+                // console.log('TEAM RESULT: ', result);
                dispatch(fetchTeams(result));
             } )
             .catch( error => {

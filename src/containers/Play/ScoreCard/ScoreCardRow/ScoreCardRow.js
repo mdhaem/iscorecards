@@ -8,11 +8,12 @@ import * as classes from './ScoreCardRow.css';
 // import ScoreCardCell from '../ScoreCell/ScoreCardCell';
 import {saveGameTotals} from '../../../../Shared/saveGameTotals'
 import Button from '../../../../components/UI/Button/Button';
-//import Auxx from '../../../../hoc/Auxx/Auxx';
+import * as actions from '../../../../store/actions';
 import ScoreCardRows from '../ScoreCardRows/ScoreCardRows'
 import ScoreCardPlayers from '../ScoreCardPlayers/ScoreCardPlayers'
 import ScoreCardTotals from '../ScoreCardTotals/ScoreCardTotals'
 import ScoreCardGameHistory from '../ScoreCardGameHistory/ScoreCardGameHistory'
+import getHistory from '../../../../Shared/calculateGameHistory'
 
 class ScoreCardRow extends Component {
     state = {
@@ -156,21 +157,51 @@ class ScoreCardRow extends Component {
         event.target.select();
     }
    
-    addGameScoreHandler = ( event ) => {
-        const gameFinalScore = {
+    addGameScoreHandler = (event) => {
+        event.preventDefault();
+        console.log(event)
+        // const highScore = this.calculateWinner(this.state.scores)
+        console.log(this.state.totals[0].sum)
+        console.log(this.state.totals)
+        const scores = []
+        this.state.totals.map((item, index) => scores.push({id: "row"+(index + 1), score: item.sum}))
+        console.log(scores)
+        const highScore = scores.reduce((acc, cur) => acc = acc > cur.score ? cur : cur.id, 0);
+        // const highScore = this.state.scores.reduce((acc, res) => acc = acc > res.score ? acc : resolve.score, 0);
+        // Math.max.apply(Math, this.state.scores.map(function(o) { return o.score; }))
+        // const highScore = Math.max.apply(Math, this.state.scores.map(function(o) { return o.score; }))
+        
+        (Date.startDate)
+        const  gameFinalScore = {
             user: localStorage.getItem('userId'),
-            scoresDate: moment().format('MM-DD-YYYY'),
+            scoresDate: moment(this.state.selectedDate).format('MM-DD-YYYY'),
             game: this.state.game,
             team: this.state.players,
             scores: this.state.totals,
+            winner: highScore,
             gameNumber: this.state.gameNumber,
         }
-        this.setState({saved: true})        
-        saveGameTotals(gameFinalScore).then( resp => {
-            this.setState({message: resp})
-            console.log(resp, "RESPONSE")
-        })
+        console.log(gameFinalScore)
+        this.props.onAddGameResult(gameFinalScore);
+        this.setState(this.state); 
+        this.setState({redirect: true}); 
     }
+
+    // addGameScoreHandler = ( event ) => {
+    //     const gameFinalScore = {
+    //         user: localStorage.getItem('userId'),
+    //         scoresDate: moment().format('MM-DD-YYYY'),
+    //         game: this.state.game,
+    //         team: this.state.players,
+    //         scores: this.state.totals,
+    //         gameNumber: this.state.gameNumber,
+    //     }
+    //     this.setState({saved: true})        
+    //     saveGameTotals(gameFinalScore).then( resp => {
+    //         this.setState({message: resp})
+    //         console.log(resp, "RESPONSE")
+    //     })
+    // }
     
 
     addRowHandler = ( event ) => {
@@ -200,7 +231,8 @@ class ScoreCardRow extends Component {
 
     ////////////////////////////////////////////////////////
     render (props) {
-        console.log('GAME HISTORY: ', this.state.history)
+        // console.log('GAME HISTORY: ', this.state.history)
+        getHistory(this.state.history, this.state.game, this.state.players)
         return (
             <React.Fragment>
             {this.state.message ? <p>{this.state.message}</p> : null}
@@ -267,4 +299,10 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ScoreCardRow);    
+const mapDispatchToProps = dispatch => {
+    return {
+        onAddGameResult: (scoreCard) => dispatch(actions.addGameResult(scoreCard)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ScoreCardRow);    
