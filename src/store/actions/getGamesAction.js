@@ -20,9 +20,9 @@ export const initGames = (tokenId, userId) => {
         const queryParams = '?auth='+ tokenId + '&orderBy="user"&equalTo="' + userId + '"';
         axios.get( '/games.json' + queryParams)
             .then( response => {
-                // console.log('GAME RESPONSE.DATA: ',response.data);
+                console.log('GAME RESPONSE.DATA: ',response.data);
                 const result = Object.keys(response.data).map(i => response.data[i])
-                // console.log('GAME RESULT: ', result);
+                console.log('GAME RESULT: ', result);
                dispatch(fetchGames(result));
             } )
             .catch( error => {

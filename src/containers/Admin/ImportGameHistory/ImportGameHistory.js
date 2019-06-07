@@ -70,9 +70,21 @@ class RegisteredGame extends Component {
 
     saveRegisteredGameHistory = (event) => {
         event.preventDefault();
+        console.log(this.props.games)
         console.log(this.state.selectedGame)
-        const highScore = this.state.scores.reduce((acc, cur) => acc = acc.score > cur.score ? acc : cur, 0)
-        const lowScore = this.state.scores.reduce((acc, cur) => acc = acc.score < cur.score ? acc : cur, 0)
+        let gameObject = {}
+        gameObject = this.props.games.find( gh => gh.game === this.state.selectedGame );
+        console.log(gameObject)
+
+        let winningScore = {}
+        if (typeof(gameObject.winningHand) !== "undefined" && gameObject.winningHand === 'Low Score') {
+            winningScore = this.state.scores.reduce((acc, cur) => acc = acc.score*1 < cur.score *1 ? acc : cur, 0)
+        } else {
+            winningScore = this.state.scores.reduce((acc, cur) => acc = acc.score*1 > cur.score*1 ? acc : cur, 0)
+        }
+
+        // const highScore = this.state.scores.reduce((acc, cur) => acc = acc.score > cur.score ? acc : cur, 0)
+        // const lowScore = this.state.scores.reduce((acc, cur) => acc = acc.score < cur.score ? acc : cur, 0)
 
         const  newHistory = {
             user: localStorage.getItem('userId'),
@@ -80,7 +92,7 @@ class RegisteredGame extends Component {
             game: this.state.selectedGame,
             team: this.state.selectedTeam,
             scores: this.state.scores,
-            winner: lowScore,
+            winner: winningScore,
             gameNumber: 1
         }
         console.log(newHistory)
@@ -108,7 +120,7 @@ class RegisteredGame extends Component {
         let uniqueGames = []
         this.props.teams.length > 1 ?
             uniqueGames = getUniqueGameNamesFromTeamProps(this.props.games) : uniqueGames = []
-
+console.log(uniqueGames)
         const gameOptions = []
         uniqueGames.map((item) => {
             gameOptions.push({value: item, label: item})

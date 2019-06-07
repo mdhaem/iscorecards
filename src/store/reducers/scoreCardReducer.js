@@ -15,6 +15,7 @@ const newScoreCard = ( state, action ) => {
     // console.log(action.CardData);
     const returnValue = updateObject( state, {
         game: action.CardData.game,
+        games: action.CardData.games,
         players: action.CardData.players,
         hands: action.CardData.hands,
         registered: action.CardData.registered,

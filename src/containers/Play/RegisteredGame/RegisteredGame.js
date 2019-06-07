@@ -21,7 +21,7 @@ class RegisteredGame extends Component {
         noTeamOptions: false,
         noGameOptions: false,
         redirect: false,
-        redirectHome:false  
+        redirectHome:false,
     }
 
     getHandsFromSelectedGame = (selectedGame) => {
@@ -70,13 +70,14 @@ class RegisteredGame extends Component {
 
     registedGamePlayHandler = (event) => {
         event.preventDefault();
-        console.log(this.props.history)
+        console.log(this.props.games)
         const scoreCard = {
             game: this.state.selectedGame,
             players: this.state.selectedTeam,
             hands: this.getHandsFromSelectedGame(this.state.selectedGame),
             registered: this.props.registered,
-            history: this.props.history
+            history: this.props.history,
+            games: this.props.games
         }
         console.log(scoreCard)
         this.props.onNewScoreCard(scoreCard);
@@ -175,7 +176,7 @@ class RegisteredGame extends Component {
                 />
             </div>
                 <Button btnType="Danger" clicked={this.quitHandler}>QUIT</Button>
-                <Button btnType="Success" disabled={!this.state.formIsValid}>CONTINUE TO SCORECARD</Button>
+                <Button btnType="Success" disabled={!this.state.formIsValid} >CONTINUE TO SCORECARD</Button>
             </form>
         );
         if ( this.props.loading ) {

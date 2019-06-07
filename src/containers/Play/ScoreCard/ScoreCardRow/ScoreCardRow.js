@@ -18,6 +18,7 @@ import getHistory from '../../../../Shared/calculateGameHistory'
 class ScoreCardRow extends Component {
     state = {
         game: this.props.game,
+        games: this.props.games,
         history: this.props.history,
         totals: [],
         row: [],
@@ -160,25 +161,32 @@ class ScoreCardRow extends Component {
     addGameScoreHandler = (event) => {
         event.preventDefault();
         console.log(event)
-        // const highScore = this.calculateWinner(this.state.scores)
-        console.log(this.state.totals[0].sum)
+        console.log(this.state.game)
+        console.log(this.state.games)
+        let gameObject = {}
+        gameObject = this.state.games.find( gh => gh.game === this.state.game );
+        console.log(gameObject)
         console.log(this.state.totals)
-        const scores = []
-        this.state.totals.map((item, index) => scores.push({id: "row"+(index + 1), score: item.sum}))
-        console.log(scores)
-        const highScore = scores.reduce((acc, cur) => acc = acc > cur.score ? cur : cur.id, 0);
-        // const highScore = this.state.scores.reduce((acc, res) => acc = acc > res.score ? acc : resolve.score, 0);
-        // Math.max.apply(Math, this.state.scores.map(function(o) { return o.score; }))
-        // const highScore = Math.max.apply(Math, this.state.scores.map(function(o) { return o.score; }))
+
+        let winningScore = {}
+        if (typeof(gameObject.winningHand) !== "undefined" && gameObject.winningHand === 'Low Score') {
+            winningScore = this.state.totals.reduce((acc, cur) => acc = acc.sum*1 < cur.sum *1 ? acc : cur, 0)
+        } else {
+            winningScore = this.state.totals.reduce((acc, cur) => acc = acc.sum*1 > cur.sum*1 ? acc : cur, 0)
+        }
+
+        // const highScore = this.state.scores.reduce((acc, cur) => acc = acc.score > cur.score ? acc : cur, 0)
+        // const lowScore = this.state.scores.reduce((acc, cur) => acc = acc.score < cur.score ? acc : cur, 0)
+
         
-        (Date.startDate)
+        // (Date.startDate)
         const  gameFinalScore = {
             user: localStorage.getItem('userId'),
             scoresDate: moment(this.state.selectedDate).format('MM-DD-YYYY'),
             game: this.state.game,
             team: this.state.players,
             scores: this.state.totals,
-            winner: highScore,
+            winner: winningScore,
             gameNumber: this.state.gameNumber,
         }
         console.log(gameFinalScore)
@@ -231,7 +239,7 @@ class ScoreCardRow extends Component {
 
     ////////////////////////////////////////////////////////
     render (props) {
-        // console.log('GAME HISTORY: ', this.state.history)
+        console.log('GAMES: ', this.props.games)
         getHistory(this.state.history, this.state.game, this.state.players)
         return (
             <React.Fragment>
@@ -292,6 +300,7 @@ const mapStateToProps = state => {
     return {
             players: state.scoreCard.players,
             game: state.scoreCard.game,
+            games: state.scoreCard.games,
             history: state.history.history,
             hands: state.scoreCard.hands,
             registered: state.scoreCard.registered,
