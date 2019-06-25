@@ -9,7 +9,7 @@ const initialState = {
 const fetchGames = (state, action) => {
     // console.log('STATE: ',state);
     // console.log('ACTION.GAMES: ', action.games);
-    action.games.length === 0 ? action.games = null : null
+    if(action.games.length === 0) {action.games = null}
     return updateObject( state, {
         games: action.games,
         error: false

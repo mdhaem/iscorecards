@@ -6,8 +6,8 @@ import {times} from '../../../../Shared/utility'
 const scoreCardRows = props => {
     // console.log(props, 'SCORECARDROWS PROPS')
     let row = [];
-    let count = props.count*1
-    let hands = props.hands*1
+    // let count = props.count*1
+    // let hands = props.hands*1
     let team = props.team
 
     times (team.length) (r =>

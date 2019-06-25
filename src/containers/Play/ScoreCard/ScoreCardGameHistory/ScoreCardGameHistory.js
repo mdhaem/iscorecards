@@ -1,11 +1,10 @@
 import React from 'react'
-
 import ScoreCardCell from '../ScoreCell/ScoreCardCell'
     
 const scoreCardGameHistory = props => {
     let count = props.count*1
-    let history = [];
-    
+    let history = []
+    console.log(props.history)
     history.push(
         <ScoreCardCell 
                 key={'history'}

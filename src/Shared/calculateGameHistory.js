@@ -1,5 +1,4 @@
 const calculateGameHistory = (history, game, team) => {
-    // console.log(history, game, team)
 
     if(!history) return null
 
@@ -9,7 +8,6 @@ const calculateGameHistory = (history, game, team) => {
             
         }
 
-        // console.log(filter)
     
         const exists = history.filter((item) => {
             for (var key in filter) {
@@ -27,13 +25,44 @@ const calculateGameHistory = (history, game, team) => {
             }
             return true;
         })
-    
-        console.log('HISTORICAL RECORDS: ', exists)
-        return exists
+
+        let cumulativeHistory = []
+console.log(exists)
+        exists.map( item => 
+            {
+                if (typeof(item.winner.sum) !== 'undefined') {cumulativeHistory.push( { key: item.winner.value[0].key})}//, value: item.winner.sum })}
+                if (typeof(item.winner.score) !== 'undefined') {cumulativeHistory.push( { key: item.winner.id})}//, value: item.winner.score })}
+                return cumulativeHistory
+            }
+        )
+         cumulativeHistory.map((item) => 
+            { 
+                if( item.key.length >= 4 ) { item.key = "history" + item.key.slice(-1) }
+                return cumulativeHistory
+            } 
+        )
+
+        //  cumulativeHistory.map((item) => { item.key.length === 5 ? item.key = item.key.slice(0,3) + item.key.slice(-1): null } )
+         console.log('cumulativeHistory: ', cumulativeHistory)
+
+         const result = cumulativeHistory.reduce((r, obj) => r.concat(obj.key), []);
+         console.log(result)
+
+        //  let allNames = {}
+         var countedWins = result.reduce(function (allNames, name) { 
+            if (name in allNames) {
+              allNames[name]++;
+            }
+            else {
+              allNames[name] = 1;
+            }
+            return allNames;
+          }, {});
+ console.log(countedWins)
+        
+        return countedWins
     }
 
-    // return console.log(history, game, team)
-// }
 
 const simpleEqual = (arr1, arr2) => {
     if(!Array.isArray(arr1) || !Array.isArray(arr2)) {

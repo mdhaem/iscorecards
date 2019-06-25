@@ -2,11 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
 import * as moment from 'moment'
-// import axios from '../../../../store/axios-data';
 
 import * as classes from './ScoreCardRow.css';
-// import ScoreCardCell from '../ScoreCell/ScoreCardCell';
-import {saveGameTotals} from '../../../../Shared/saveGameTotals'
 import Button from '../../../../components/UI/Button/Button';
 import * as actions from '../../../../store/actions';
 import ScoreCardRows from '../ScoreCardRows/ScoreCardRows'
@@ -20,7 +17,9 @@ class ScoreCardRow extends Component {
         game: this.props.game,
         games: this.props.games,
         history: this.props.history,
+        historySummary: [],
         totals: [],
+        sum: [],
         row: [],
         hands: this.props.hands,
         players: this.props.players,
@@ -34,47 +33,43 @@ class ScoreCardRow extends Component {
     updateState = () => {
         this.setState(this.state); 
         const players = this.props.players;
-        // console.log(this.props.players);
         let newStateObjects = [];
         players.forEach(item => {
             newStateObjects.push({key: item, sum: 0,  value:[]});
         });
-        
-        // console.log(newStateObjects);
-        
+                
+        return(newStateObjects); 
+    }
+
+    updateStateHistory = () => {
+        // this.setState(this.state); 
+        const players = this.props.players;
+        let newStateObjects = [];
+        players.forEach((item, index) => {
+            newStateObjects.push({key: "history"+(index+1), value:0});
+        });
+                
         return(newStateObjects); 
     }
 
     inputChangedHandler = (event, inputIdentifier, column, row) => {
-        // console.log('#######################################');
-        // console.log('event.target.value', event.target.value);
-        // console.log('inputIdentifier', inputIdentifier);
-        // console.log('column', column);
-        // console.log('row', row);
-
+        
         const updatedRow = this.state.row;
         updatedRow.find(x => x.key === inputIdentifier).value = event.target.value;
         this.setState({row: updatedRow});
 
         const updatedState = this.state.totals;
-        // console.log('updatedState[column-1].value[row]', updatedState[column-1].value[row]);
         if(event.target.value >= 0){
-            //console.log(updatedState[column-1].value[row]);
             if(updatedState[column-1].value[row]){
                 updatedState[column-1].value[row].value = event.target.value;
             } else {
                 updatedState[column-1].value.push({key: inputIdentifier, value: event.target.value});
-                // console.log(updatedState[column-1].value[row]);
             }
         }
-        // console.log('updatedState', updatedState);
-        // console.log('updatedState[column-1].value', updatedState[column-1].value);
         const newSum = parseInt(this.sumArray(updatedState[column-1].value), 10);
-        // console.log('newSum', newSum);
         updatedState[column-1].sum = newSum;
+
         this.setState({totals: updatedState});
-        // console.log('this.state.totals',this.state.totals);
-        // console.log('this.state.totals[column-1].sum', this.state.totals[column-1].sum);
         this.setState(this.state);
     }
 
@@ -83,7 +78,6 @@ class ScoreCardRow extends Component {
         updatedRow.map( item => item.value = 0);
         this.setState({row: updatedRow});
         const updatedTotals = this.state.totals;
-        // console.log(updatedTotals);
         updatedTotals.map( item => {
             item.sum = 0; 
             item.value = [];
@@ -118,26 +112,23 @@ class ScoreCardRow extends Component {
         
     
     componentDidMount() {
-        //populate state totals with {key:name sum:0} for each player
-        // const updateTotals = this.updateState();
-        // this.setState({totals: updateTotals});
-
-        //populate state row with {key:}
-    //     const rows = this.rowArray(this.state.count);
-    // console.log(rows);
-    //     let newRows = this.state.row;
-    //     newRows = rows;
-    //     this.setState({row: rows});
-    // console.log(this.state.row);
-
-        if(this.props.hands){ this.setState({hands: parseInt(this.props.hands)}, () => {
-            // console.log(this.state.hands)
+        if(this.props.hands){ this.setState({hands: parseInt(this.props.hands, 10)}, () => {
             const updateTotals = this.updateState();
             this.setState({totals: updateTotals});
 
             const rows = this.rowArray(this.state.count);
-            // console.log(rows);
             this.setState({row: rows});
+
+            const updateHistorySummary = this.updateStateHistory()
+            console.log(updateHistorySummary)
+            this.setState({historySummary: updateHistorySummary})
+
+            const gameHistory = getHistory(this.state.history, this.state.game, this.state.players)
+            console.log(gameHistory)
+            const newGameHistory = this.state.historySummary
+            this.setState({historySummary: newGameHistory})
+
+
         })}
     };
 
@@ -151,6 +142,7 @@ class ScoreCardRow extends Component {
             })
         
         })
+
         return rowArray;
     }
 
@@ -160,26 +152,20 @@ class ScoreCardRow extends Component {
    
     addGameScoreHandler = (event) => {
         event.preventDefault();
-        console.log(event)
-        console.log(this.state.game)
-        console.log(this.state.games)
         let gameObject = {}
         gameObject = this.state.games.find( gh => gh.game === this.state.game );
-        console.log(gameObject)
-        console.log(this.state.totals)
+
+        console.log(this.state.sum)
 
         let winningScore = {}
         if (typeof(gameObject.winningHand) !== "undefined" && gameObject.winningHand === 'Low Score') {
             winningScore = this.state.totals.reduce((acc, cur) => acc = acc.sum*1 < cur.sum *1 ? acc : cur, 0)
+            delete winningScore.value
         } else {
             winningScore = this.state.totals.reduce((acc, cur) => acc = acc.sum*1 > cur.sum*1 ? acc : cur, 0)
+            delete winningScore.value
         }
 
-        // const highScore = this.state.scores.reduce((acc, cur) => acc = acc.score > cur.score ? acc : cur, 0)
-        // const lowScore = this.state.scores.reduce((acc, cur) => acc = acc.score < cur.score ? acc : cur, 0)
-
-        
-        // (Date.startDate)
         const  gameFinalScore = {
             user: localStorage.getItem('userId'),
             scoresDate: moment(this.state.selectedDate).format('MM-DD-YYYY'),
@@ -189,28 +175,10 @@ class ScoreCardRow extends Component {
             winner: winningScore,
             gameNumber: this.state.gameNumber,
         }
-        console.log(gameFinalScore)
         this.props.onAddGameResult(gameFinalScore);
         this.setState(this.state); 
         this.setState({redirect: true}); 
     }
-
-    // addGameScoreHandler = ( event ) => {
-    //     const gameFinalScore = {
-    //         user: localStorage.getItem('userId'),
-    //         scoresDate: moment().format('MM-DD-YYYY'),
-    //         game: this.state.game,
-    //         team: this.state.players,
-    //         scores: this.state.totals,
-    //         gameNumber: this.state.gameNumber,
-    //     }
-    //     this.setState({saved: true})        
-    //     saveGameTotals(gameFinalScore).then( resp => {
-    //         this.setState({message: resp})
-    //         console.log(resp, "RESPONSE")
-    //     })
-    // }
-    
 
     addRowHandler = ( event ) => {
         event.preventDefault();
@@ -229,18 +197,14 @@ class ScoreCardRow extends Component {
         let newHands = this.state.hands ;
         let newRowArray = this.state.row;
         const newTotalsArray = this.state.totals;
-        // newTotalsArray.map(item => {
-        //     return console.log(item.value[0]) ;
-        //     //item.value.key.contains('row'+this.state.hand) ? 
-        // })
         newRowArray.splice(newRowArray.length - this.props.players.length, this.props.players.length);
         this.setState({hands: newHands - 1, row: newRowArray, totals: newTotalsArray });        
     }
 
     ////////////////////////////////////////////////////////
     render (props) {
-        console.log('GAMES: ', this.props.games)
-        getHistory(this.state.history, this.state.game, this.state.players)
+        // const gameHistory = getHistory(this.state.history, this.state.game, this.state.players)
+        console.log(this.state.historySummary)
         return (
             <React.Fragment>
             {this.state.message ? <p>{this.state.message}</p> : null}
@@ -251,7 +215,7 @@ class ScoreCardRow extends Component {
                     <ScoreCardGameHistory
                         count={this.state.count}
                         times={this.times}
-                        history={this.props.history}>
+                        history={this.state.historySummary}>
                     </ScoreCardGameHistory>
                 </div>
                 : null}

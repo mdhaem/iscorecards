@@ -114,10 +114,10 @@ class UnregisteredGame extends Component {
 
 
     render() {
-        const errorMessageStyle = {
-            color: 'red',
-            fontSize: 'small'
-        }
+        // const errorMessageStyle = {
+        //     color: 'red',
+        //     fontSize: 'small'
+        // }
         const formElementsArray = [];
         for (let key in this.state.unregisteredGameForm) {
             formElementsArray.push({

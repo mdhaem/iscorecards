@@ -10,7 +10,7 @@ const initialState = {
 const fetchTeams = (state, action) => {
     // console.log('STATE: ', state);
     // console.log('ACTION.TEAMS: ', action.teams);
-    action.teams.length === 0 ? action.teams = null : null
+    if( action.teams.length === 0 ) { action.teams = null }
     return updateObject( state, {
         teams: action.teams,
         error: false

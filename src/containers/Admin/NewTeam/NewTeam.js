@@ -88,8 +88,8 @@ class SelectGame extends Component {
         }
 
         let newTeamInstructions = 'To create a new team, select two or more members from the players list.';
-        typeof this.props.location.state !== 'undefined'? 
-            newTeamInstructions = 'Please create a team to continue.' : null
+        if(typeof this.props.location.state !== 'undefined') 
+            { newTeamInstructions = 'Please create a team to continue.' }
             
         return (
             

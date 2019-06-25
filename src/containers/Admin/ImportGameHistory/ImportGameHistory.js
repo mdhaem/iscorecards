@@ -12,7 +12,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
 import { checkValidity, getUniqueGameNamesFromTeamProps, getFirstNamesFromTeamsProps } from '../../../Shared/utility';
 import GameScoreHistory from './importGameHistoryScores/importGameHistoryScores.js'
-import { resolve } from 'dns';
+// import { resolve } from 'dns';
 
 class RegisteredGame extends Component {
     state = {
@@ -26,8 +26,6 @@ class RegisteredGame extends Component {
     }
 
     handleOptionSelect = (selectedOption, optionMeta) => {
-        console.log(selectedOption)
-        console.log(optionMeta)
         switch(optionMeta.name){
             case "selectedGame":
                 if(checkValidity(selectedOption.value, {changed: true})){
@@ -65,16 +63,13 @@ class RegisteredGame extends Component {
       }
 
     handleDateChange = date => {
-        this.setState({selectedDate: date})
+        this.setState({selectedDate: date}, () => console.log(this.state.selectedDate))
       };
 
     saveRegisteredGameHistory = (event) => {
         event.preventDefault();
-        console.log(this.props.games)
-        console.log(this.state.selectedGame)
         let gameObject = {}
         gameObject = this.props.games.find( gh => gh.game === this.state.selectedGame );
-        console.log(gameObject)
 
         let winningScore = {}
         if (typeof(gameObject.winningHand) !== "undefined" && gameObject.winningHand === 'Low Score') {
@@ -82,9 +77,6 @@ class RegisteredGame extends Component {
         } else {
             winningScore = this.state.scores.reduce((acc, cur) => acc = acc.score*1 > cur.score*1 ? acc : cur, 0)
         }
-
-        // const highScore = this.state.scores.reduce((acc, cur) => acc = acc.score > cur.score ? acc : cur, 0)
-        // const lowScore = this.state.scores.reduce((acc, cur) => acc = acc.score < cur.score ? acc : cur, 0)
 
         const  newHistory = {
             user: localStorage.getItem('userId'),
@@ -95,20 +87,9 @@ class RegisteredGame extends Component {
             winner: winningScore,
             gameNumber: 1
         }
-        console.log(newHistory)
         this.props.onAddGameResult(newHistory);
         this.setState(this.state); 
         this.setState({redirect: true}); 
-    }
-
-    calculateWinner = (scores) => {
-        if(scores.length > 0) {
-            const highScore = Math.max.apply(Math, scores.map(function(o) { return o.score; }))
-            console.log(scores)
-            console.log(highScore)
-            return highScore
-        }
-        
     }
 
     componentDidMount(props) {
@@ -120,7 +101,6 @@ class RegisteredGame extends Component {
         let uniqueGames = []
         this.props.teams.length > 1 ?
             uniqueGames = getUniqueGameNamesFromTeamProps(this.props.games) : uniqueGames = []
-console.log(uniqueGames)
         const gameOptions = []
         uniqueGames.map((item) => {
             gameOptions.push({value: item, label: item})
@@ -130,7 +110,6 @@ console.log(uniqueGames)
         let teamsFirstNames = []
         this.props.teams.length > 1 ?
             teamsFirstNames = getFirstNamesFromTeamsProps(this.props.teams) : teamsFirstNames = []
-// this.props.teams.length > 0 ? console.log(this.props.teams) : null
         const teamOptions = []
         teamsFirstNames.map((item, index) => {
             teamOptions.push({value: item, label: item.toString().replace(/,/g, ', ')})
@@ -145,9 +124,7 @@ console.log(uniqueGames)
             }),
             control: (provided, state) => ({
                 ...provided,
-                width: 100,
                 padding: 0,
-                
                 width: 400,
                 align: 'center',
                 margin: 'auto',
@@ -158,22 +135,22 @@ console.log(uniqueGames)
             }
           }
         
-          const tableColumns = [
-            {
-                header: 'Id',
-                accessor: 'id'
-            },
-            {
-                header: 'Name',
-                accessor: 'name',
-                render: props => <input value={props.row.name}  />
-            },
-            {
-                header: 'Score',
-                accessor: 'score',
-                render: props => <input value={props.row.name}  />
-            }
-        ]
+        //   const tableColumns = [
+        //     {
+        //         header: 'Id',
+        //         accessor: 'id'
+        //     },
+        //     {
+        //         header: 'Name',
+        //         accessor: 'name',
+        //         render: props => <input value={props.row.name}  />
+        //     },
+        //     {
+        //         header: 'Score',
+        //         accessor: 'score',
+        //         render: props => <input value={props.row.name}  />
+        //     }
+        // ]
 
 
         let form = (
@@ -201,7 +178,6 @@ console.log(uniqueGames)
             <div>{this.state.selectedTeam.length > 0 ?
                  <GameScoreHistory 
                     team={this.state.selectedTeam} 
-                    // changed={this.scoreInputChangeHandler}
                     blur={this.handleBlur}
                     /> : null}
             </div>
@@ -219,7 +195,10 @@ console.log(uniqueGames)
             <div className={classes.ImportGameHistory}>
                 <h1>Import Scores</h1>
                 <p className={classes.Instructions}>Select game then team.</p>
-                <DatePicker selected={this.state.selectedDate} value={this.state.selectedDate} onChange={this.handleDateChange}/>
+                <DatePicker 
+                    selected={this.state.selectedDate} 
+                    // value={this.state.selectedDate} 
+                    onChange={this.handleDateChange}/>
 
                 <p>{this.state.selectedGame} {this.state.selectedTeam}</p>
                 {this.state.redirect?<Redirect to="/scorecard" />:null}

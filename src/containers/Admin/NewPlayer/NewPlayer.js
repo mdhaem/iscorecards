@@ -111,10 +111,10 @@ class newPlayer extends Component {
         )
     }  
 
-      const errorMessageStyle = {
-          color: 'red',
-          fontSize: 'small'
-      }
+    //   const errorMessageStyle = {
+    //       color: 'red',
+    //       fontSize: 'small'
+    //   }
       const formElementsArray = [];
       for (let key in this.state.newPlayerForm) {
           formElementsArray.push({
